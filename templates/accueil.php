@@ -80,9 +80,9 @@ ceb_debut( array( 'corps' => 'page-accueil' ) );
 
 	<section class="section">
 		<div class="conteneur ecole">
-			<div class="ecole__photos" data-apparition>
-				<img src="<?php echo $img( 'sortie-technique.webp' ); // Déjà échappé. ?>" alt="Étudiants en sortie pédagogique sur un site industriel" width="1200" height="900" loading="lazy">
-				<img src="<?php echo $img( 'en-cours.webp' ); // Déjà échappé. ?>" alt="Étudiants en salle de cours" width="1000" height="722" loading="lazy">
+			<div class="ecole__photos">
+				<img src="<?php echo $img( 'sortie-technique.webp' ); // Déjà échappé. ?>" alt="Étudiants en sortie pédagogique sur un site industriel" width="1200" height="900" decoding="async">
+				<img src="<?php echo $img( 'en-cours.webp' ); // Déjà échappé. ?>" alt="Étudiants en salle de cours" width="1000" height="722" decoding="async">
 			</div>
 			<div data-apparition>
 				<h2>Former ceux qui transmettent la technique</h2>

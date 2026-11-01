@@ -77,6 +77,8 @@ add_action( 'template_redirect', static function () {
 	$arg  = get_query_var( 'ceb_arg' );
 	if ( '' === $page ) {
 		if ( is_front_page() || is_home() ) {
+			/* L'en-tête dépend de la session : pas de copie gardée par le navigateur. */
+			nocache_headers();
 			ceb_afficher_page( 'accueil' );
 		}
 		return;

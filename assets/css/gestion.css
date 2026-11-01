@@ -97,10 +97,6 @@ td small.age { color: #7a4f00; font-weight: 600; margin-top: .15rem; }
 .tableau__candidat a::after { content: ""; position: absolute; inset: 0; }
 .tableau__fleche { color: var(--gris); width: 40px; }
 @media (hover: hover) and (pointer: fine) { tbody tr:hover { background: #f6f9f6; } }
-.etiquette { display: inline-flex; align-items: center; gap: .28rem; padding: .1rem .55rem; border-radius: 999px; font-size: .86rem; font-weight: 600; background: #e7ece8; color: var(--gris); white-space: nowrap; }
-.etiquette--verifie, .etiquette--valide { background: var(--enset-clair); color: var(--enset-fonce); }
-.etiquette--rejete { background: var(--danger-fond); color: var(--danger); }
-.etiquette--attente, .etiquette--soumis { background: var(--alerte-fond); color: #5f3e00; }
 .pagination { display: flex; justify-content: center; align-items: center; gap: 1rem; padding: 1rem; }
 
 /* Un dossier */
@@ -346,3 +342,4 @@ td small.age { color: #7a4f00; font-weight: 600; margin-top: .15rem; }
 .signal .icone:last-child { margin-left: auto; }
 
 .gestion__corps .credit { margin-top: 2rem; padding: 0; }
+

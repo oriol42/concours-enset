@@ -32,7 +32,7 @@ ceb_debut( array( 'titre' => 'Mon dossier', 'corps' => 'page-dossier' ) );
 			<h1><?php echo esc_html( trim( $d->prenoms . ' ' . $d->noms ) ); ?></h1>
 			<p>N° candidat <b><?php echo esc_html( $d->numero ); ?></b></p>
 		</div>
-		<a class="btn btn--lien" href="<?php echo esc_url( ceb_url( 'quitter' ) ); ?>"><?php echo ceb_icone( 'sortie', 16 ); ?>Quitter</a>
+		<?php ceb_etiquette( $d->statut, CEB_STATUTS_CANDIDAT[ $d->statut ] ?? '' ); ?>
 	</header>
 
 	<?php if ( 'rejete' === $d->statut ) : ?>

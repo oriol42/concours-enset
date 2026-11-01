@@ -13,7 +13,6 @@ ceb_debut( array( 'titre' => 'Notifications', 'corps' => 'page-dossier' ) );
 ceb_marquer_candidat( $d->id );
 ?>
 <main id="contenu" class="conteneur espace espace--etroit">
-	<a class="feuille__retour" href="<?php echo esc_url( ceb_url( 'mon-dossier' ) ); ?>"><?php echo ceb_icone( 'fleche-g', 16 ); ?>Mon dossier</a>
 	<h1 class="page-titre">Notifications</h1>
 	<?php if ( ! $liste ) : ?>
 		<p class="vide-carte">Les décisions de la scolarité sur ton dossier s'afficheront ici.</p>

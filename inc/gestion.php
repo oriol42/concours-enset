@@ -17,6 +17,14 @@ const CEB_STATUTS = array(
 	'rejete'    => 'À corriger',
 );
 
+/* Les mêmes statuts, dits au candidat. */
+const CEB_STATUTS_CANDIDAT = array(
+	'brouillon' => 'À terminer',
+	'soumis'    => 'En cours d\'examen',
+	'valide'    => 'Validé',
+	'rejete'    => 'À corriger',
+);
+
 const CEB_PAIEMENTS = array(
 	'attente' => 'À vérifier',
 	'verifie' => 'Vérifié',
