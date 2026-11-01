@@ -53,11 +53,11 @@ $tuiles = array(
 );
 $tete( 'Tableau de bord', $etat . ', session ' . $r['annee'] . ( $r['cloture'] ? ', clôture le ' . ceb_date_fr( $r['cloture'] ) : '' ), $action );
 ?>
-<div class="kpis">
+<div class="kpis" data-groupe>
 	<?php foreach ( $tuiles as $u ) : ?>
 		<a class="kpi <?php echo esc_attr( $u[4] ); ?>" href="<?php echo esc_url( $lien( $u[3] ) ); ?>">
 			<span><?php echo esc_html( $u[0] ); ?></span>
-			<b data-compter="<?php echo (int) $u[1]; ?>"><?php echo (int) $u[1]; ?></b>
+			<b data-compte="<?php echo (int) $u[1]; ?>"><?php echo (int) $u[1]; ?></b>
 			<small><?php echo esc_html( $u[2] ); ?></small>
 		</a>
 	<?php endforeach; ?>

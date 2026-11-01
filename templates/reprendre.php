@@ -11,11 +11,11 @@ list( $saisie, $erreurs ) = ceb_reprendre();
 ceb_debut( array( 'titre' => 'Reprendre mon dossier', 'corps' => 'page-acces', 'nu' => true ) );
 ?>
 <main id="contenu" class="acces">
-	<div class="acces__image"><img src="<?php echo esc_url( CEB_URI . '/assets/images/campus-aerien.webp' ); ?>" alt="Vue aérienne du campus de l'Université d'Ebolowa" width="1400" height="700"></div>
+	<div class="acces__image"><img src="<?php echo esc_url( CEB_URI . '/assets/images/campus-aerien.webp' ); ?>" alt="Vue aérienne du campus de l'Université d'Ebolowa" width="1200" height="600"></div>
 	<div class="acces__carte">
 		<section class="acces__volet">
 			<a class="feuille__retour" href="<?php echo esc_url( ceb_url() ); ?>"><?php echo ceb_icone( 'fleche-g', 16 ); ?>Accueil</a>
-			<img class="acces__logo" src="<?php echo esc_url( CEB_URI . '/assets/images/enset-marque.png' ); ?>" alt="ENSET d'Ebolowa" width="96" height="96">
+			<img class="acces__logo" src="<?php echo esc_url( CEB_URI . '/assets/images/enset-marque.webp' ); ?>" alt="ENSET d'Ebolowa" width="96" height="96">
 			<h1>Reprendre mon dossier</h1>
 			<p class="acces__intro">Pour le compléter, le corriger ou réimprimer ta fiche.</p>
 			<?php ceb_afficher_flash(); ?>

@@ -32,7 +32,7 @@ ceb_debut( array( 'titre' => 'Scolarité', 'corps' => 'page-gestion', 'nu' => tr
 <div class="gestion" data-cloche="<?php echo esc_url( add_query_arg( 'vue', 'notifs-json', $base ) ); ?>">
 	<aside class="barre">
 		<a class="marque" href="<?php echo esc_url( $base ); ?>">
-			<img src="<?php echo esc_url( CEB_URI . '/assets/images/enset-marque.png' ); ?>" alt="" width="44" height="44">
+			<img src="<?php echo esc_url( CEB_URI . '/assets/images/enset-marque.webp' ); ?>" alt="" width="44" height="44">
 			<span class="marque__nom">Scolarité<small>Concours ENSET</small></span>
 		</a>
 		<nav aria-label="Espace scolarité">

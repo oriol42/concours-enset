@@ -63,14 +63,14 @@ ceb_debut( array( 'corps' => 'page-accueil' ) );
 			</div>
 			<div class="heros__scene" data-scene>
 				<figure class="heros__arche">
-					<img src="<?php echo $img( 'campus-aerien.webp' ); // Déjà échappé. ?>" alt="Vue aérienne du campus de l'Université d'Ebolowa, dans la forêt équatoriale" width="1400" height="700" fetchpriority="high">
+					<img src="<?php echo $img( 'campus-aerien.webp' ); // Déjà échappé. ?>" srcset="<?php echo $img( 'campus-aerien-800.webp' ); // Déjà échappé. ?> 800w, <?php echo $img( 'campus-aerien.webp' ); // Déjà échappé. ?> 1200w" sizes="(max-width: 1000px) 94vw, 50vw" alt="Vue aérienne du campus de l'Université d'Ebolowa, dans la forêt équatoriale" width="1200" height="600" fetchpriority="high">
 				</figure>
 			</div>
 		</div>
 	</section>
 
 	<section class="reperes" aria-label="Le concours en chiffres">
-		<div class="conteneur reperes__ligne">
+		<div class="conteneur reperes__ligne" data-groupe>
 			<p><b><?php echo esc_html( $r['cloture'] ? ceb_date_fr( $r['cloture'] ) : 'Selon l\'arrêté' ); ?></b><span>Date limite d'inscription</span></p>
 			<p><b><?php echo esc_html( ceb_fcfa( $r['frais'] ) ); ?></b><span>Frais de concours</span></p>
 			<p><b data-compte="<?php echo (int) $nb_opt; ?>"><?php echo (int) $nb_opt; ?></b><span>Options, en deux cycles</span></p>
@@ -81,13 +81,13 @@ ceb_debut( array( 'corps' => 'page-accueil' ) );
 	<section class="section">
 		<div class="conteneur ecole">
 			<div class="ecole__photos">
-				<img src="<?php echo $img( 'sortie-technique.webp' ); // Déjà échappé. ?>" alt="Étudiants en sortie pédagogique sur un site industriel" width="1200" height="900" decoding="async">
-				<img src="<?php echo $img( 'en-cours.webp' ); // Déjà échappé. ?>" alt="Étudiants en salle de cours" width="1000" height="722" decoding="async">
+				<img src="<?php echo $img( 'sortie-technique.webp' ); // Déjà échappé. ?>" alt="Étudiants en sortie pédagogique sur un site industriel" width="900" height="675" loading="lazy" decoding="async">
+				<img src="<?php echo $img( 'en-cours.webp' ); // Déjà échappé. ?>" alt="Étudiants en salle de cours" width="600" height="433" loading="lazy" decoding="async">
 			</div>
 			<div data-apparition>
 				<h2>Former ceux qui transmettent la technique</h2>
 				<p>L'ENSET d'Ebolowa prépare des enseignants de l'enseignement technique et des cadres pour l'industrie et le commerce.</p>
-				<ul>
+				<ul data-groupe>
 					<li><?php echo ceb_icone( 'diplome', 19 ); ?><span><b>Premier cycle</b> après un Baccalauréat, un GCE A/L ou un BT.</span></li>
 					<li><?php echo ceb_icone( 'diplome', 19 ); ?><span><b>Second cycle</b> après une Licence ou un diplôme équivalent.</span></li>
 					<li><?php echo ceb_icone( 'lieu', 19 ); ?><span><?php echo esc_html( implode( ', ', array_slice( $centres, 0, -1 ) ) . ' et ' . end( $centres ) ); ?> pour composer.</span></li>
@@ -129,7 +129,7 @@ ceb_debut( array( 'corps' => 'page-accueil' ) );
 				<div data-resultat aria-live="polite" hidden></div>
 				<div data-listes>
 					<?php foreach ( CEB_CYCLES as $code => $cycle ) : ?>
-						<ul class="filieres" role="tabpanel" id="offre-<?php echo esc_attr( $code ); ?>" aria-labelledby="onglet-offre-<?php echo esc_attr( $code ); ?>"<?php echo 'CYC1' === $code ? '' : ' hidden'; ?>>
+						<ul class="filieres" data-groupe role="tabpanel" id="offre-<?php echo esc_attr( $code ); ?>" aria-labelledby="onglet-offre-<?php echo esc_attr( $code ); ?>"<?php echo 'CYC1' === $code ? '' : ' hidden'; ?>>
 							<?php foreach ( $offre[ $code ] as $filiere => $options ) : ?>
 								<li><b><?php echo esc_html( $filiere ); ?></b><span><?php echo esc_html( implode( ', ', $options ) ); ?></span></li>
 							<?php endforeach; ?>
@@ -151,7 +151,7 @@ ceb_debut( array( 'corps' => 'page-accueil' ) );
 					<?php endforeach; ?>
 				</div>
 				<?php foreach ( CEB_CYCLES as $code => $cycle ) : ?>
-					<ul class="pieces" role="tabpanel" id="pieces-<?php echo esc_attr( $code ); ?>" aria-labelledby="onglet-<?php echo esc_attr( $code ); ?>"<?php echo 'CYC1' === $code ? '' : ' hidden'; ?>>
+					<ul class="pieces" data-groupe role="tabpanel" id="pieces-<?php echo esc_attr( $code ); ?>" aria-labelledby="onglet-<?php echo esc_attr( $code ); ?>"<?php echo 'CYC1' === $code ? '' : ' hidden'; ?>>
 						<?php foreach ( ceb_pieces( $code ) as $piece ) : ?>
 							<li><?php echo ceb_icone( 'check', 16 ); ?><?php echo esc_html( $piece ); ?></li>
 						<?php endforeach; ?>
@@ -215,7 +215,7 @@ ceb_debut( array( 'corps' => 'page-accueil' ) );
 
 	<?php if ( 'ouvert' === $etat && ! $dossier ) : ?>
 		<section class="appel">
-			<img src="<?php echo $img( 'campus-foret.webp' ); // Déjà échappé. ?>" alt="" width="1600" height="800" loading="lazy">
+			<img src="<?php echo $img( 'campus-foret.webp' ); // Déjà échappé. ?>" alt="" width="1280" height="640" loading="lazy">
 			<div class="conteneur appel__ligne" data-apparition>
 				<div>
 					<h2>Ton reçu est prêt ?</h2>

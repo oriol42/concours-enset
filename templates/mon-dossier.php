@@ -67,7 +67,7 @@ ceb_debut( array( 'titre' => 'Mon dossier', 'corps' => 'page-dossier' ) );
 
 		<section class="a-deposer" aria-labelledby="pieces-titre">
 			<h2 id="pieces-titre">À déposer à la scolarité</h2>
-			<ul class="pieces">
+			<ul class="pieces" data-groupe>
 				<?php foreach ( ceb_pieces( $d->cycle ) as $piece ) : ?>
 					<li><?php echo ceb_icone( 'check', 16 ); ?><?php echo esc_html( $piece ); ?></li>
 				<?php endforeach; ?>

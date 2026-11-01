@@ -46,6 +46,36 @@
 	/* Retour arrière du navigateur : le bouton doit redevenir actif. */
 	addEventListener("pageshow", () => $$("[data-envoi]").forEach((b) => { b.disabled = false; }));
 
+	/*
+	 * Apparitions au défilement, sans bibliothèque. L'observateur se déclenche
+	 * un peu avant l'entrée à l'écran : on ne voit jamais de zone vide.
+	 */
+	const racine = document.documentElement;
+	const compter = (el) => {
+		const cible = +el.dataset.compte;
+		if (!cible || racine.classList.contains("leger")) return;
+		const debut = performance.now();
+		const pas = (t) => {
+			const p = Math.min(1, (t - debut) / 800);
+			el.textContent = Math.round(cible * (1 - (1 - p) ** 3));
+			if (p < 1) requestAnimationFrame(pas);
+		};
+		requestAnimationFrame(pas);
+	};
+	$$("[data-groupe]").forEach((g) => [...g.children].forEach((c, i) => c.style.setProperty("--i", Math.min(i, 8))));
+	const animes = $$("[data-apparition], [data-groupe], [data-frise], [data-compte]");
+	if ("IntersectionObserver" in window) {
+		const vue = new IntersectionObserver((entrees) => entrees.forEach((e) => {
+			if (!e.isIntersecting) return;
+			e.target.classList.add("vu");
+			if (e.target.dataset.compte) compter(e.target);
+			vue.unobserve(e.target);
+		}), { rootMargin: "0px 0px 12% 0px" });
+		animes.forEach((el) => vue.observe(el));
+	} else {
+		animes.forEach((el) => el.classList.add("vu"));
+	}
+
 	/* Menu : se referme au choix d'un lien ou en touchant ailleurs. */
 	const menu = document.querySelector("[data-menu]");
 	if (menu) {

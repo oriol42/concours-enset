@@ -165,7 +165,9 @@ section[id] { scroll-margin-top: 90px; }
 /* Procédure */
 .frise { --avance: 0; position: relative; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 2rem; }
 .frise::before, .frise::after { content: ""; position: absolute; top: 25px; left: 26px; right: 22%; height: 2px; background: var(--filet-fort); }
-.frise::after { background: var(--enset); transform: scaleX(var(--avance)); transform-origin: left; }
+.frise::after { background: var(--enset); transform: scaleX(var(--avance)); transform-origin: left; transition: transform 1.3s var(--ressort) .15s; }
+.frise.vu { --avance: 1; }
+.leger .frise { --avance: 1; }
 .frise__num { position: relative; z-index: 1; display: grid; place-items: center; width: 52px; height: 52px; border-radius: 50%; background: var(--enset); color: #fff; font: 700 1.3rem var(--f-titre); box-shadow: 0 0 0 7px var(--papier); }
 .frise h3 { font-size: 1.28rem; margin: 1.15rem 0 .35rem; }
 .frise p { color: var(--gris); }
@@ -455,3 +457,64 @@ dd { margin: 0; font-weight: 600; overflow-wrap: anywhere; }
 	html { scroll-behavior: auto; }
 	*, *::before, *::after { transition-duration: .01ms !important; animation-duration: .01ms !important; }
 }
+
+/* ==========================================================================
+   Animations : uniquement transform et opacity, en CSS, pour rester fluides
+   sur un petit téléphone. Rien n'est caché sans la classe .anime, posée avant
+   l'affichage : sans JS, en 2G ou en économie de données, tout est là.
+   ========================================================================== */
+@keyframes entree { from { opacity: 0; transform: translateY(14px); } }
+@keyframes arche { from { clip-path: inset(100% 0 0 0 round 999px 999px 0 0); } to { clip-path: inset(0 0 0 0 round 999px 999px 0 0); } }
+@keyframes zoom-doux { from { transform: scale(1.1); } }
+@keyframes pop { 0% { transform: scale(.6); } 60% { transform: scale(1.12); } 100% { transform: scale(1); } }
+@keyframes respire { 50% { box-shadow: 0 0 0 7px rgba(0, 122, 61, .16); } }
+
+.anime .heros [data-entree] { animation: entree .6s var(--sortie) both; }
+.anime .heros [data-entree]:nth-child(2) { animation-delay: .07s; }
+.anime .heros [data-entree]:nth-child(3) { animation-delay: .14s; }
+.anime .heros [data-entree]:nth-child(4) { animation-delay: .21s; }
+.anime .heros__scene { animation: arche .9s var(--ressort) both; }
+.anime .heros__arche img { animation: zoom-doux 1.5s var(--sortie) both; }
+.anime .heros__actions .btn--primaire { animation: respire 2.4s ease-in-out 1.4s 2; }
+
+.anime [data-apparition] { opacity: 0; transform: translateY(16px); transition: opacity .5s var(--sortie), transform .5s var(--sortie); }
+.anime [data-apparition].vu { opacity: 1; transform: none; }
+.anime [data-groupe] > * { opacity: 0; transform: translateY(12px); transition: opacity .42s var(--sortie), transform .42s var(--sortie); transition-delay: calc(var(--i, 0) * 45ms); }
+.anime [data-groupe].vu > * { opacity: 1; transform: none; }
+.anime .frise__num { transform: scale(.7); opacity: 0; transition: transform .45s var(--ressort), opacity .3s; }
+.anime .frise__etape:nth-child(2) .frise__num { transition-delay: .25s; }
+.anime .frise__etape:nth-child(3) .frise__num { transition-delay: .5s; }
+.anime .frise__etape:nth-child(4) .frise__num { transition-delay: .75s; }
+.anime .frise.vu .frise__num { transform: none; opacity: 1; }
+.anime .ecole__photos img:last-child { transition: transform .5s var(--sortie); }
+@media (hover: hover) and (pointer: fine) { .anime .ecole__photos:hover img:last-child { transform: translateY(-6px); } }
+
+.anime .accordeon details[open] p { animation: entree .28s var(--sortie); }
+.anime .filieres li { transition-property: opacity, transform; }
+.anime [data-resultat] li { animation: entree .32s var(--sortie) both; }
+.anime [role="tabpanel"]:not([hidden]) { animation: entree .26s var(--sortie); }
+
+/* Inscription */
+.anime .etapes .est-active i { animation: pop .38s var(--ressort); }
+.anime .parcours-choix__liste label { animation: entree .3s var(--sortie) both; }
+.anime .parcours-choix__liste label:nth-child(2) { animation-delay: 40ms; }
+.anime .parcours-choix__liste label:nth-child(3) { animation-delay: 80ms; }
+.anime .parcours-choix__liste label:nth-child(n + 4) { animation-delay: 120ms; }
+.anime .choix__liste input:checked + span, .anime .parcours-choix__liste input:checked + span::after { animation: pop .28s var(--sortie); }
+.anime .numero-remis { animation: entree .45s var(--sortie); }
+.anime .champ__erreur:not([hidden]) { animation: entree .2s var(--sortie); }
+.anime .depot.est-rempli .depot__apercu { animation: pop .34s var(--ressort); }
+
+/* Espace candidat et notifications */
+.anime .suivi li { animation: entree .4s var(--sortie) both; }
+.anime .suivi li:nth-child(2) { animation-delay: 70ms; }
+.anime .suivi li:nth-child(3) { animation-delay: 140ms; }
+.anime .suivi li:nth-child(4) { animation-delay: 210ms; }
+.anime .suivi .est-faite i { animation: pop .4s var(--ressort) .2s both; }
+.anime .notifs li { animation: entree .36s var(--sortie) both; }
+.anime .notifs li:nth-child(2) { animation-delay: 50ms; }
+.anime .notifs li:nth-child(n + 3) { animation-delay: 100ms; }
+.anime [data-cloche-nombre]:not([hidden]) { animation: pop .4s var(--ressort); }
+.anime .annonce { animation: entree .3s var(--sortie); }
+
+.leger *, .leger *::before, .leger *::after { animation: none !important; transition: none !important; }

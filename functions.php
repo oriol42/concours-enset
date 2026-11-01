@@ -32,6 +32,18 @@ add_action( 'after_setup_theme', static function () {
 	add_theme_support( 'title-tag' );
 } );
 
+/* Ce que WordPress ajoute à chaque page et dont la plateforme n'a pas besoin. */
+remove_action( 'wp_head', 'print_emoji_detection_script', 7 );
+remove_action( 'wp_print_styles', 'print_emoji_styles' );
+remove_action( 'wp_head', 'wp_generator' );
+remove_action( 'wp_head', 'rsd_link' );
+remove_action( 'wp_head', 'wlwmanifest_link' );
+remove_action( 'wp_head', 'wp_shortlink_wp_head' );
+remove_action( 'wp_head', 'rest_output_link_wp_head' );
+remove_action( 'wp_head', 'wp_oembed_add_discovery_links' );
+remove_action( 'wp_head', 'feed_links', 2 );
+remove_action( 'wp_head', 'feed_links_extra', 3 );
+
 /* Pas de barre WordPress sur les pages publiques : la plateforme a son propre en-tête. */
 add_filter( 'show_admin_bar', '__return_false' );
 
@@ -47,9 +59,7 @@ add_action( 'wp_enqueue_scripts', static function () {
 
 	$page = get_query_var( 'ceb_page' ) ?: 'accueil';
 	if ( 'accueil' === $page ) {
-		wp_enqueue_script( 'gsap', CEB_URI . '/assets/js/vendor/gsap.min.js', array(), '3', array( 'strategy' => 'defer', 'in_footer' => true ) );
-		wp_enqueue_script( 'gsap-st', CEB_URI . '/assets/js/vendor/ScrollTrigger.min.js', array( 'gsap' ), '3', array( 'strategy' => 'defer', 'in_footer' => true ) );
-		wp_enqueue_script( 'ceb-accueil', CEB_URI . '/assets/js/accueil.js', array( 'gsap-st' ), $v( 'assets/js/accueil.js' ), array( 'strategy' => 'defer', 'in_footer' => true ) );
+		wp_enqueue_script( 'ceb-accueil', CEB_URI . '/assets/js/accueil.js', array(), $v( 'assets/js/accueil.js' ), array( 'strategy' => 'defer', 'in_footer' => true ) );
 	}
 	if ( 'candidature' === $page ) {
 		wp_enqueue_script( 'ceb-candidature', CEB_URI . '/assets/js/candidature.js', array(), $v( 'assets/js/candidature.js' ), array( 'strategy' => 'defer', 'in_footer' => true ) );

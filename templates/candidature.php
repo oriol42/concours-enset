@@ -33,7 +33,7 @@ ceb_debut( array( 'titre' => $titres[ $etape ][0], 'corps' => 'page-candidature'
 		<div class="conteneur">
 			<div class="parcours__ligne">
 				<a class="marque" href="<?php echo esc_url( ceb_url() ); ?>">
-					<img src="<?php echo esc_url( CEB_URI . '/assets/images/enset-marque.png' ); ?>" alt="" width="50" height="50">
+					<img src="<?php echo esc_url( CEB_URI . '/assets/images/enset-marque.webp' ); ?>" alt="" width="50" height="50">
 					<span class="marque__nom">Concours ENSET<small>Session <?php echo esc_html( $r['annee'] ); ?></small></span>
 				</a>
 				<span class="parcours__sauve"><?php echo ceb_icone( 'check', 15 ); ?>Enregistré à chaque étape</span>

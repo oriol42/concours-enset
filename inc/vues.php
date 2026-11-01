@@ -66,7 +66,15 @@ function ceb_debut( array $o = array() ) {
 	<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content">
 	<meta name="theme-color" content="#fefffd">
 	<meta name="description" content="<?php echo esc_attr( $o['description'] ); ?>">
-	<link rel="icon" href="<?php echo esc_url( CEB_URI . '/assets/images/enset-marque.png' ); ?>">
+	<link rel="icon" href="<?php echo esc_url( CEB_URI . '/assets/images/enset-marque.webp' ); ?>">
+	<script>
+	/* Avant l'affichage : animations seulement si la connexion et l'appareil le permettent. */
+	(function (h) {
+		var c = navigator.connection || {};
+		var lent = c.saveData || /(^|-)2g$/.test(c.effectiveType || '') || matchMedia('(prefers-reduced-motion: reduce)').matches;
+		h.classList.add(lent ? 'leger' : 'anime');
+	})(document.documentElement);
+	</script>
 	<?php wp_head(); ?>
 </head>
 <body class="<?php echo esc_attr( $o['corps'] ); ?>">
@@ -89,7 +97,7 @@ function ceb_fin( array $o = array() ) {
 function ceb_entete() {
 	$dossier = ceb_dossier_courant();
 	$page    = get_query_var( 'ceb_page' );
-	$logo    = '<img src="' . esc_url( CEB_URI . '/assets/images/enset-marque.png' ) . '" alt="" width="50" height="50">';
+	$logo    = '<img src="' . esc_url( CEB_URI . '/assets/images/enset-marque.webp' ) . '" alt="" width="50" height="50">';
 	if ( $dossier && in_array( $page, array( 'mon-dossier', 'notifications' ), true ) ) {
 		$non_lues = ceb_non_lues_candidat( $dossier->id );
 		?>
@@ -161,7 +169,7 @@ function ceb_pied() {
 	<footer class="pied">
 		<div class="conteneur pied__grille">
 			<div class="pied__marque">
-				<img src="<?php echo esc_url( CEB_URI . '/assets/images/enset-marque.png' ); ?>" alt="" width="64" height="64" loading="lazy">
+				<img src="<?php echo esc_url( CEB_URI . '/assets/images/enset-marque.webp' ); ?>" alt="" width="64" height="64" loading="lazy">
 				<div>
 					<p class="pied__nom">ENSET d'Ebolowa</p>
 					<p>École Normale Supérieure d'Enseignement Technique, Université d'Ebolowa</p>
