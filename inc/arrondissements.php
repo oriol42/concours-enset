@@ -1,0 +1,71 @@
+<?php
+/**
+ * Arrondissements par département, repris du référentiel de la préinscription
+ * UEb (mêmes codes que les fichiers de l'ENSET). Fichier généré : à corriger
+ * dans les données, pas à la main ligne par ligne.
+ *
+ * @package Concours_ENSET
+ */
+
+defined( 'ABSPATH' ) || exit;
+
+const CEB_ARRONDISSEMENTS = array(
+	'Djérem' => array( 'NGAOUNDAL', 'TIBATI' ),
+	'Faro-et-Déo' => array( 'GALIM TIGNERE', 'MAYO BALEO', 'KONTCHA', 'TIGNERE' ),
+	'Mayo-Banyo' => array( 'BANKIM', 'BANYO', 'MAYO-DARLE' ),
+	'Mbéré' => array( 'DIR', 'DJOHONG', 'NGAOUI', 'MEIGANGA' ),
+	'Vina' => array( 'CU DE NGAOUNDERE', 'BELEL', 'MBE', 'NGAOUNDÉRÉ I', 'NGAOUNDÉRÉ II', 'NGAOUNDÉRÉ III', 'MARTAP', 'NGAN-HA', 'NYAMBAKA' ),
+	'Haute-Sanaga' => array( 'MBANDJOCK', 'MINTA', 'NANGA-EBOKO', 'BIBEY', 'LEMBE YEZOUM', 'NSEM', 'NKOTENG' ),
+	'Lekié' => array( 'EBEBDA', 'ELIG-MFOMO', 'EVODOULA', 'MONATELE', 'OBALA', 'BATCHENGA', 'OKOLA', 'LOBO', 'SA\'A' ),
+	'Mbam-et-Inoubou' => array( 'BAFIA', 'BOKITO', 'DEUK', 'MAKENENE', 'NDIKINIMEKI', 'NITOUKOU', 'OMBESSA', 'KIIKI', 'KON-YAMBETTA' ),
+	'Mbam-et-Kim' => array( 'MBANGASSINA', 'NGAMBE-TIKAR', 'NGORO', 'NTUI', 'YOKO' ),
+	'Méfou-et-Afamba' => array( 'AWAE', 'OLANGUINA / ASSAMBA', 'ESSE', 'AFANLOUM', 'EDZENDOUAN', 'MFOU', 'NKOLAFAMBA', 'SOA' ),
+	'Méfou-et-Akono' => array( 'AKONO', 'BIKOK', 'MBANKOMO', 'NGOUMOU' ),
+	'Mfoundi' => array( 'CU DE YAOUNDE', 'YAOUNDE 1', 'YAOUNDE 2', 'YAOUNDE 3', 'YAOUNDE 4', 'YAOUNDE 5', 'YAOUNDE 6', 'YAOUNDE 7' ),
+	'Nyong-et-Kéllé' => array( 'BOT MAKAK', 'NGUIBASSAL', 'DIBANG', 'ESEKA', 'MAKAK', 'BONDJOCK', 'MATOMB', 'MESSONDO', 'BIYOUHA', 'NGOG MAPUBI' ),
+	'Nyong-et-Mfoumou' => array( 'AKONOLINGA', 'MENGANG', 'AYOS', 'KOBDOMBO / NYAKOKOMBO', 'ENDOM' ),
+	'Nyong-et-So\'o' => array( 'DZENG', 'MBALMAYO', 'AKOEMAN', 'MENGUEME', 'NKOLMETET', 'NGOMEDZAP' ),
+	'Boumba-et-Ngoko' => array( 'GARI GOMBO', 'MOLOUNDOU', 'SALAPOUMBE', 'YOKADOUMA', 'CU DE BERTOUA' ),
+	'Haut-Nyong' => array( 'ABONG - MBANG', 'ATOK / BEBEND', 'MINDOUROU / DJA', 'ANGOSSAS / MBOANZ', 'DIMAKO', 'DOUME', 'DOUMAINTANG', 'LOMIE', 'MESSOK', 'MESSAMENA', 'SOMALOMO', 'NGOYLA', 'NGUELEMENDOUKA', 'MBOMA' ),
+	'Kadey' => array( 'BATOURI', 'NGUELEBOK / NDEM-NAM', 'KETTE', 'OULI / MBOTORO', 'MBANG', 'NDELELE', 'KENTZOU / BOMBE' ),
+	'Lom-et-Djérem' => array( 'BELABO', 'BETARE-OYA', 'NGOURA', 'BERTOUA 1ER', 'DIANG', 'GAROUA-BOULAI', 'BERTOUA IIE', 'MANDJOU' ),
+	'Diamaré' => array( 'CU DE MAROUA', 'BOGO', 'GAZAWA', 'MAROUA I', 'DARGALA', 'NDOUKOULA', 'MERI', 'PETTE', 'MAROUA II', 'MAROUA III', 'FOTOKOL' ),
+	'Logone-et-Chari' => array( 'BLANGOUA', 'DARAK', 'GOULFEY', 'HILE-ALIFA', 'KOUSSERI', 'LOGONE BIRNI', 'ZINA', 'MAKARI', 'WAZA' ),
+	'Mayo-Danay' => array( 'DATCHEKA', 'GOBO', 'GUERE', 'KAÏ-KAÏ', 'KALFOU', 'KARHAY', 'MAGA', 'TCHATIBALI', 'GUEME / VELE', 'WINA', 'YAGOUA' ),
+	'Mayo-Kani' => array( 'GUIDIGUIS', 'KAELE', 'MINDIF', 'MOULVOUDAYE', 'MOUTOURWA', 'PORHI', 'DZIGUILAO / TAIBONG' ),
+	'Mayo-Sava' => array( 'KOLOFATA', 'MORA', 'TOKOMBERE' ),
+	'Mayo-Tsanaga' => array( 'BOURRHA', 'HINA', 'KOZA', 'MAYO-MOSKOTA', 'MOGODE', 'MOKOLO', 'SOULEDE ROUA' ),
+	'Moungo' => array( 'CU DE NKONGSAMBA', 'BARE-BAKEM', 'DIBOMBARI', 'ABO/FIKO', 'LOUM', 'MANJO', 'MBANGA', 'MOMBO', 'MELONG', 'NJOMBE-PENJA', 'NKONGSAMBA 1', 'EBONE / NLONAKO', 'NKONGSAMBA 2', 'NKONGSAMBA 3', 'NKONDJOCK', 'NDOBIAN / NORD MAKOMBE', 'YINGUI', 'MOUANKO', 'MASSOK-SONGLOULOU', 'DIBAMBA', 'CU DE DOUALA' ),
+	'Nkam' => array( 'YABASSI' ),
+	'Sanaga-Maritime' => array( 'CU DE EDEA', 'DIZANGUE', 'EDEA 1', 'NDOM', 'NYANON', 'NGAMBE', 'POUMA', 'EDEA 2', 'NGWEI' ),
+	'Wouri' => array( 'DOUALA 1', 'DOUALA 2', 'DOUALA 3', 'DOUALA 4', 'DOUALA 5', 'DOUALA 6' ),
+	'Bénoué' => array( 'CU DE GAROUA', 'BIBEMI', 'DEMBO', 'LAGDO', 'GAROUA I', 'BASCHEO', 'GASHIGA / DEMSA', 'TOUROUA', 'PITOA', 'TCHEBOA', 'GAROUA II', 'GAROUA III', 'MAYO HOURNA' ),
+	'Faro' => array( 'BEKA', 'POLI' ),
+	'Mayo-Louti' => array( 'FIGUIL', 'GUIDER', 'MAYO OULO' ),
+	'Mayo-Rey' => array( 'REY-BOUBA', 'TCHOLLIRE', 'MADINGRING', 'TOUBORO' ),
+	'Boyo' => array( 'BELO', 'FONFUKA / BUM', 'FUNDONG', 'NJINIKOM' ),
+	'Bui' => array( 'JAKIRI', 'KUMBO', 'MBIAME / MBVEN', 'NKOR / NONI', 'ELAK OKU / OKU', 'NKUM' ),
+	'Donga-Mantung' => array( 'AKO', 'MISAJE', 'NDU', 'NKAMBE', 'NWA' ),
+	'Menchum' => array( 'ZHOA / FUNGOM', 'FURU-AWA', 'BENAKUMA / MENCHUM VALLEY', 'WUM / WUM CENTRAL' ),
+	'Mezam' => array( 'CU DE BAMENDA', 'BAFUT', 'BALI', 'BAMENDA 1', 'SANTA', 'TUBAH', 'BAMENDA 2', 'BAMENDA 3' ),
+	'Momo' => array( 'BATIBO', 'MBENGWI', 'ANDEK / NGIE', 'NJIKWA', 'WIDIKUM-MENKA' ),
+	'Ngo-Ketunjia' => array( 'BABESSI', 'BALIKUMBAT', 'NDOP' ),
+	'Bamboutos' => array( 'BABADJOU', 'BATCHAM', 'GALIM', 'MBOUDA' ),
+	'Haut-Nkam' => array( 'BAFANG', 'BAKOU', 'BANA', 'BANDJA', 'KEKEM', 'BANWA', 'BANKA' ),
+	'Hauts-Plateaux' => array( 'BAHAM', 'BAMENDJOU', 'BATIE', 'BANGOU' ),
+	'Koung-Khi' => array( 'BAYANGAM', 'PETE BANDJOUN / POUMOUGNE', 'DEMDING / DJEBEM' ),
+	'Ménoua' => array( 'DSCHANG', 'FOKOUE', 'NKONG-ZEM / NKONG-NI', 'PENKA MICHEL', 'SANTCHOU', 'FONGO TONGO' ),
+	'Mifi' => array( 'CU DE BAFFOUSSAM', 'BAFOUSSAM 1', 'BAFOUSSAM 2', 'BAFOUSSAM 3' ),
+	'Ndé' => array( 'BANGANGTE', 'BASSAMBA', 'BAZOU', 'TONGA' ),
+	'Noun' => array( 'BANGOURAIN', 'FOUMBAN', 'FOUMBOT', 'KOUOPTAMO', 'KOUTABA', 'MAGBA', 'MALENTOUEN', 'MASSANGAM', 'NJIMOM' ),
+	'Dja-et-Lobo' => array( 'BENGBIS', 'DJOUM', 'MEYOMESSALA', 'MINTOM', 'OVENG', 'SANGMELIMA', 'ZOETELE', 'MEYOMESSI', 'CU DE KRIBI', 'NIETE' ),
+	'Mvila' => array( 'CU DE EBOLOWA', 'BIWONG-BANE', 'EBOLOWA IER', 'MENGONG', 'MVANGAN', 'NGOULEMAKONG', 'BIWONG-BULU', 'EBOLOWA IIE', 'EFOULAN' ),
+	'Océan' => array( 'AKOM 2', 'BIPINDI', 'CAMPO', 'KRIBI 1', 'LOLODORF', 'MVENGUE', 'KRIBI 2', 'LOKOUNDJE' ),
+	'Vallée-du-Ntem' => array( 'AMBAM', 'MA\'AN', 'OLAMZE', 'KYE OSSI' ),
+	'Fako' => array( 'CU DE LIMBE', 'BUEA', 'IDENAU / WEST COAST', 'LIMBÉ 1', 'MUYUKA', 'TIKO', 'LIMBÉ 2', 'LIMBÉ 3' ),
+	'Koupé-Manengouba' => array( 'BANGEM', 'NGUTI', 'TOMBEL' ),
+	'Lebialem' => array( 'ALOU', 'MENJI / FONTEM', 'WABANE' ),
+	'Manyu' => array( 'AKWAYA', 'EYUMODJOCK', 'MAMFE CENTRAL', 'TIMTO / UPPER BANYANG' ),
+	'Meme' => array( 'CU DE KUMBA', 'KUMBA 1', 'KONYE', 'MBONGE', 'KUMBA 2', 'KUMBA 3' ),
+	'Ndian' => array( 'BAMUSSO', 'EKONDO-TITI', 'DIKOME BALUE', 'IDABATO', 'ISANGELE', 'KOMBO ABEDIMO', 'KOMBO ITINDI', 'MUNDEMBA', 'TOKO' ),
+);

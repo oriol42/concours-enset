@@ -1,0 +1,11 @@
+/*
+Theme Name: Concours ENSET Ebolowa
+Theme URI: https://enset.unv-ebolowa.cm/concours
+Author: Equipe UEb
+Description: Plateforme d'inscription en ligne au concours d'entree de l'ENSET d'Ebolowa : candidature par etapes, fiche PDF officielle, suivi du dossier et espace scolarite. Code a la main, sans plugin, avec ses propres tables.
+Version: 1.0.0
+Requires PHP: 8.1
+Text Domain: concours-enset
+*/
+
+/* Les styles sont dans assets/css/ : ce fichier ne sert qu'a declarer le theme. */
