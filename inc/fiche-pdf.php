@@ -179,6 +179,7 @@ function ceb_pdf_page( $pdf, $d ) {
 		$pdf->Rect( $s[0], $y + 4.4, 60, 11, 'D', array( 'all' => array( 'dash' => '1.5,1', 'width' => 0.2, 'color' => CEB_PDF_GRIS ) ) );
 	}
 	ceb_pdf_recepisse( $pdf, $d, $y + 20 );
+	ceb_pdf_ecrire( $pdf, 0, 291.5, 210, CEB_CREDIT, 'uebserifi', 6.5, CEB_PDF_GRIS, 'C', 3 );
 }
 
 /** Coupon gardé par le candidat, cacheté au dépôt. */

@@ -36,7 +36,8 @@
 }
 *, *::before, *::after { box-sizing: border-box; }
 html { -webkit-tap-highlight-color: transparent; -webkit-text-size-adjust: 100%; scroll-behavior: smooth; scroll-padding-top: 96px; }
-body { margin: 0; background: var(--blanc); color: var(--encre); font: 400 1.0625rem/1.6 var(--f-texte); }
+body { display: flex; flex-direction: column; min-height: 100dvh; margin: 0; background: var(--blanc); color: var(--encre); font: 400 1.0625rem/1.6 var(--f-texte); }
+body > main, body > .gestion { flex: 1 0 auto; }
 [hidden] { display: none !important; }
 img { max-width: 100%; height: auto; display: block; }
 h1, h2, h3 { font-family: var(--f-titre); font-weight: 700; line-height: 1.12; margin: 0; letter-spacing: -.015em; text-wrap: balance; }
@@ -192,13 +193,21 @@ section[id] { scroll-margin-top: 90px; }
 .appel h2 { font-size: clamp(1.8rem, 1.3rem + 1.8vw, 2.7rem); }
 .appel p { color: #dce8e0; margin-top: .4rem; }
 
-/* Pied */
-.pied { background: var(--bandeau); color: #dbe7df; padding: 2.8rem 0 calc(2.6rem + env(safe-area-inset-bottom, 0px)); }
-.pied__grille { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 1.5rem 3rem; }
-.pied__nom { font: 700 1.12rem var(--f-titre); color: #fff; margin-bottom: .25rem; }
+/* Pied : toujours en bas de page, même sur une page courte */
+.pied { background: var(--bandeau); color: #dbe7df; }
+.pied__grille { display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(0, .8fr) minmax(0, 1fr); gap: 2rem 3rem; padding-block: 2.8rem 2.2rem; }
+.pied__marque { display: flex; gap: 1rem; align-items: flex-start; }
+.pied__marque img { width: 64px; height: 64px; padding: 5px; flex: none; border-radius: 16px; background: #fff; object-fit: contain; }
+.pied__nom { font: 700 1.2rem var(--f-titre); color: #fff; margin-bottom: .2rem; }
+.pied h2 { font: 600 1rem var(--f-texte); letter-spacing: 0; color: #fff; margin-bottom: .55rem; }
+.pied nav { display: grid; align-content: start; gap: .25rem; justify-items: start; }
+.pied a { color: inherit; text-underline-offset: 3px; }
 .pied li { display: flex; align-items: center; gap: .55rem; }
 .pied li + li { margin-top: .3rem; }
-.pied a { color: inherit; }
+.pied__bas { border-top: 1px solid rgba(255, 255, 255, .14); padding-bottom: env(safe-area-inset-bottom, 0px); font-size: .9rem; color: #c0d3c7; }
+.pied__bas .conteneur { display: flex; flex-wrap: wrap; justify-content: space-between; gap: .2rem 2rem; padding-block: .85rem; }
+.credit { padding: .7rem 1rem; color: var(--gris); font-size: .84rem; text-align: center; }
+@media (max-width: 760px) { .pied__grille { grid-template-columns: minmax(0, 1fr); } }
 
 /* Champs */
 .formulaire { display: grid; gap: 1.2rem; }

@@ -321,7 +321,7 @@ function ceb_action_reglages() {
 		ceb_flash( 'erreur', 'Saisis l\'année au format 2027/2028.' );
 		ceb_rediriger( ceb_url( 'gestion' ) . '?vue=reglages' );
 	}
-	$date = static fn( $cle ) => ceb_date_valide( ceb_post( $cle ) ) ? ceb_post( $cle ) : '';
+	$date = static fn( $cle ) => ceb_date_valide( ceb_date_post( $cle ) ) ? ceb_date_post( $cle ) : '';
 	$liste = static fn( $cle ) => array_values( array_map( 'sanitize_key', array_map( 'strval', (array) ( $_POST[ $cle ] ?? array() ) ) ) );
 	$centres_ouverts = array_map( 'strtoupper', $liste( 'centres' ) );
 	$options_ouvertes = array_map( 'strtoupper', $liste( 'options' ) );
@@ -428,6 +428,33 @@ function ceb_compteurs() {
 		$champs .= ', SUM(' . $f['sql'] . ') ' . $cle;
 	}
 	return $wpdb->get_row( $wpdb->prepare( "SELECT $champs FROM " . ceb_table() . ' WHERE annee = %s', ceb_reglage( 'annee' ) ) );
+}
+
+/**
+ * Ressemblances avec d'autres dossiers. Un téléphone ou un e-mail partagé est
+ * courant (parent, cybercafé) : la scolarité est alertée, sans blocage.
+ *
+ * @return array liste de array( texte, id du dossier ).
+ */
+function ceb_signaux( $d ) {
+	global $wpdb;
+	$t       = ceb_table();
+	$signaux = array();
+	$regles  = array(
+		'recu_empreinte' => array( $d->recu_empreinte, 'Même image de reçu que' ),
+		'telephone'      => array( $d->telephone, 'Même téléphone que' ),
+		'email'          => array( $d->email, 'Même e-mail que' ),
+	);
+	foreach ( $regles as $col => $r ) {
+		if ( '' === (string) $r[0] ) {
+			continue;
+		}
+		$lignes = $wpdb->get_results( $wpdb->prepare( "SELECT id, numero, noms, prenoms FROM $t WHERE annee = %s AND $col = %s AND id <> %d LIMIT 3", $d->annee, $r[0], $d->id ) );
+		foreach ( $lignes as $l ) {
+			$signaux[] = array( $r[1] . ' ' . trim( $l->noms . ' ' . $l->prenoms ) . ' (' . $l->numero . ')', (int) $l->id );
+		}
+	}
+	return $signaux;
 }
 
 /** Initiales d'un candidat, quand il n'a pas encore de photo. */

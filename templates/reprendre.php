@@ -34,6 +34,7 @@ ceb_debut( array( 'titre' => 'Reprendre mon dossier', 'corps' => 'page-acces', '
 			<?php if ( 'ouvert' === ceb_etat_session() ) : ?>
 				<p class="acces__bascule">Pas encore inscrit ? <a href="<?php echo esc_url( ceb_url( 'candidature/1' ) ); ?>">M'inscrire au concours</a></p>
 			<?php endif; ?>
+			<?php ceb_credit(); ?>
 		</section>
 	</div>
 </main>

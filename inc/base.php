@@ -8,7 +8,7 @@
 
 defined( 'ABSPATH' ) || exit;
 
-const CEB_BASE_VERSION = '3';
+const CEB_BASE_VERSION = '4';
 
 function ceb_table( $nom = 'dossiers' ) {
 	global $wpdb;
@@ -62,6 +62,7 @@ function ceb_schema() {
 			photo VARCHAR(80) NOT NULL DEFAULT '',
 			recu VARCHAR(80) NOT NULL DEFAULT '',
 			recu_type VARCHAR(30) NOT NULL DEFAULT '',
+			recu_empreinte CHAR(40) NOT NULL DEFAULT '',
 			transaction_num VARCHAR(30) NULL,
 			alerte_age TINYINT(1) NOT NULL DEFAULT 0,
 			pieces_recues VARCHAR(120) NOT NULL DEFAULT '',
@@ -112,6 +113,9 @@ add_action( 'after_setup_theme', static function () {
 	/* Bases créées avant le contrôle des pièces. */
 	if ( ! $wpdb->get_var( 'SHOW COLUMNS FROM ' . ceb_table() . " LIKE 'depot_le'" ) ) {
 		$wpdb->query( 'ALTER TABLE ' . ceb_table() . " ADD pieces_recues VARCHAR(120) NOT NULL DEFAULT '', ADD depot_le DATETIME NULL" );
+	}
+	if ( ! $wpdb->get_var( 'SHOW COLUMNS FROM ' . ceb_table() . " LIKE 'recu_empreinte'" ) ) {
+		$wpdb->query( 'ALTER TABLE ' . ceb_table() . " ADD recu_empreinte CHAR(40) NOT NULL DEFAULT ''" );
 	}
 	update_option( 'ceb_base_version', CEB_BASE_VERSION, false );
 } );

@@ -46,6 +46,13 @@
 	/* Retour arrière du navigateur : le bouton doit redevenir actif. */
 	addEventListener("pageshow", () => $$("[data-envoi]").forEach((b) => { b.disabled = false; }));
 
+	/* Dates : les barres s'ajoutent seules, le clavier numérique suffit. */
+	$$("[data-date]").forEach((c) => c.addEventListener("input", (e) => {
+		if (e.inputType === "deleteContentBackward") return;
+		const d = c.value.replace(/\D/g, "").slice(0, 8);
+		c.value = d.length > 4 ? d.slice(0, 2) + "/" + d.slice(2, 4) + "/" + d.slice(4) : d.length > 2 ? d.slice(0, 2) + "/" + d.slice(2) : d;
+	}));
+
 	/* Cloche : compteur actualisé toutes les 30 secondes, avec une annonce à l'arrivée. */
 	const cloche = document.querySelector("[data-cloche]");
 	if (cloche) {

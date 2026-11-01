@@ -239,6 +239,7 @@ ceb_debut( array( 'titre' => $titres[ $etape ][0], 'corps' => 'page-candidature'
 			<?php endif; ?>
 		</aside>
 	</div>
+	<?php ceb_credit(); ?>
 </main>
 <?php
 ceb_fin( array( 'nu' => true ) );

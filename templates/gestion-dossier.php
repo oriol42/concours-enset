@@ -98,6 +98,9 @@ $etapes  = array(
 			<button type="button" role="tab" id="o-journal" aria-controls="t-journal" aria-selected="false">Journal</button>
 		</div>
 
+		<?php foreach ( ceb_signaux( $d ) as $signal ) : ?>
+			<a class="signal" href="<?php echo esc_url( add_query_arg( 'dossier', $signal[1], ceb_url( 'gestion' ) ) ); ?>"><?php echo ceb_icone( 'alerte', 17 ); ?><?php echo esc_html( $signal[0] ); ?><?php echo ceb_icone( 'fleche', 15 ); ?></a>
+		<?php endforeach; ?>
 		<?php if ( $attente ) : ?>
 			<div class="attente"><?php echo ceb_icone( 'horloge', 20 ); ?><div><b>En attente du candidat</b><p><?php echo esc_html( $d->motif ); ?>. Il a été prévenu et le dossier revient ici dès sa correction.</p></div></div>
 		<?php endif; ?>

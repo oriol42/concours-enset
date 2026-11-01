@@ -117,28 +117,55 @@ function ceb_entete() {
 	<?php
 }
 
+/** Mention du prestataire, la même que sur nos autres plateformes et documents. */
+const CEB_CREDIT = '@NexusCore : Nous développons vos solutions informatiques (676295488 / 659490221 / 693899150 / 673414381)';
+
 function ceb_pied() {
 	$tel   = ceb_reglage( 'telephone' );
 	$email = ceb_reglage( 'email' );
 	?>
 	<footer class="pied">
 		<div class="conteneur pied__grille">
-			<div>
-				<p class="pied__nom">École Normale Supérieure d'Enseignement Technique d'Ebolowa</p>
-				<p>Université d'Ebolowa, BP 118 Ebolowa, Cameroun</p>
+			<div class="pied__marque">
+				<img src="<?php echo esc_url( CEB_URI . '/assets/images/enset-marque.png' ); ?>" alt="" width="64" height="64" loading="lazy">
+				<div>
+					<p class="pied__nom">ENSET d'Ebolowa</p>
+					<p>École Normale Supérieure d'Enseignement Technique, Université d'Ebolowa</p>
+				</div>
 			</div>
-			<ul>
-				<?php if ( $tel ) : ?>
-					<li><?php echo ceb_icone( 'telephone', 16 ); ?><a href="tel:<?php echo esc_attr( preg_replace( '/\s+/', '', $tel ) ); ?>"><?php echo esc_html( $tel ); ?></a></li>
-				<?php endif; ?>
-				<?php if ( $email ) : ?>
-					<li><?php echo ceb_icone( 'courriel', 16 ); ?><a href="mailto:<?php echo esc_attr( $email ); ?>"><?php echo esc_html( $email ); ?></a></li>
-				<?php endif; ?>
-				<li><?php echo ceb_icone( 'lieu', 16 ); ?>Service de la scolarité, ENSET d'Ebolowa</li>
-			</ul>
+			<nav aria-label="Liens du pied de page">
+				<h2>Le concours</h2>
+				<a href="<?php echo esc_url( ceb_url( '#filieres' ) ); ?>">Filières</a>
+				<a href="<?php echo esc_url( ceb_url( '#dossier' ) ); ?>">Pièces et frais</a>
+				<a href="<?php echo esc_url( ceb_url( '#questions' ) ); ?>">Questions</a>
+				<a href="<?php echo esc_url( ceb_url( 'reprendre' ) ); ?>">Reprendre mon dossier</a>
+			</nav>
+			<div>
+				<h2>Contact</h2>
+				<ul>
+					<li><?php echo ceb_icone( 'lieu', 16 ); ?>Service de la scolarité, BP 118 Ebolowa</li>
+					<?php if ( $tel ) : ?>
+						<li><?php echo ceb_icone( 'telephone', 16 ); ?><a href="tel:<?php echo esc_attr( preg_replace( '/\s+/', '', $tel ) ); ?>"><?php echo esc_html( $tel ); ?></a></li>
+					<?php endif; ?>
+					<?php if ( $email ) : ?>
+						<li><?php echo ceb_icone( 'courriel', 16 ); ?><a href="mailto:<?php echo esc_attr( $email ); ?>"><?php echo esc_html( $email ); ?></a></li>
+					<?php endif; ?>
+				</ul>
+			</div>
+		</div>
+		<div class="pied__bas">
+			<div class="conteneur">
+				<span>Session <?php echo esc_html( ceb_reglage( 'annee' ) ); ?></span>
+				<span><?php echo esc_html( CEB_CREDIT ); ?></span>
+			</div>
 		</div>
 	</footer>
 	<?php
+}
+
+/** Mention discrète des pages sans pied complet. */
+function ceb_credit() {
+	echo '<p class="credit">' . esc_html( CEB_CREDIT ) . '</p>';
 }
 
 function ceb_alerte( $type, $message ) {
@@ -167,6 +194,12 @@ function ceb_afficher_flash() {
  */
 function ceb_champ( array $c ) {
 	$c += array( 'type' => 'text', 'valeur' => '', 'erreurs' => array(), 'aide' => '', 'options' => null, 'attrs' => array(), 'facultatif' => false, 'classe' => '', 'vide' => 'Choisir', 'mention' => true );
+	/* Date saisie au clavier, JJ/MM/AAAA : plus rapide qu'un calendrier pour une naissance. */
+	if ( 'date' === $c['type'] ) {
+		$c['type']  = 'text';
+		$c['valeur'] = preg_match( '/^(\d{4})-(\d{2})-(\d{2})$/', (string) $c['valeur'], $m ) ? "$m[3]/$m[2]/$m[1]" : $c['valeur'];
+		$c['attrs'] = array_merge( array_diff_key( $c['attrs'], array( 'max' => 1 ) ), array( 'inputmode' => 'numeric', 'maxlength' => 10, 'placeholder' => 'JJ/MM/AAAA', 'data-date' => '1', 'autocomplete' => $c['attrs']['autocomplete'] ?? 'off' ) );
+	}
 	$id     = 'c-' . $c['nom'];
 	$erreur = $c['erreurs'][ $c['nom'] ] ?? '';
 	$decrit = array_filter( array( $c['aide'] ? $id . '-aide' : '', $erreur ? $id . '-err' : '' ) );

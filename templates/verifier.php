@@ -33,6 +33,7 @@ ceb_debut( array( 'titre' => 'Vérification', 'corps' => 'page-acces', 'nu' => t
 					<div><dt>Centre</dt><dd><?php echo esc_html( CEB_CENTRES[ $d->centre ] ?? '' ); ?></dd></div>
 				</dl>
 			<?php endif; ?>
+			<?php ceb_credit(); ?>
 		</section>
 	</div>
 </main>

@@ -88,6 +88,7 @@ ceb_debut( array( 'titre' => 'Scolarité', 'corps' => 'page-gestion', 'nu' => tr
 		} else {
 			require CEB_DIR . '/templates/gestion-bord.php';
 		}
+		ceb_credit();
 		?>
 	</main>
 </div>

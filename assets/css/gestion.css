@@ -341,3 +341,8 @@ td small.age { color: #7a4f00; font-weight: 600; margin-top: .15rem; }
 	.atelier__onglets { border-radius: 18px; }
 	.atelier__espace { display: none; }
 }
+
+.signal { display: flex; align-items: center; gap: .5rem; padding: .55rem .9rem; margin-bottom: .5rem; border-radius: 12px; background: var(--alerte-fond); color: #5f3e00; font-weight: 600; text-decoration: none; }
+.signal .icone:last-child { margin-left: auto; }
+
+.gestion__corps .credit { margin-top: 2rem; padding: 0; }

@@ -64,7 +64,9 @@
 	if (age && zoneAge && naissance && age.cycle) {
 		const fonctionnaire = $('input[name="fonctionnaire"]');
 		const verifier = () => {
-			const d = new Date(naissance.value), r = new Date(age.date);
+			const m = naissance.value.match(/^(\d{2})\/(\d{2})\/(\d{4})$/);
+			if (!m) { zoneAge.hidden = true; return; }
+			const d = new Date(+m[3], m[2] - 1, +m[1]), r = new Date(age.date);
 			let a = r.getFullYear() - d.getFullYear();
 			if (r.getMonth() < d.getMonth() || (r.getMonth() === d.getMonth() && r.getDate() < d.getDate())) a--;
 			const trop = naissance.value && !fonctionnaire.checked && a > age[age.cycle];
@@ -74,7 +76,7 @@
 				zoneAge.textContent = "Tu auras " + a + " ans à la date de référence, pour une limite de " + age[age.cycle] + " ans. Tu peux continuer : la scolarité examinera ton dossier.";
 			}
 		};
-		naissance.addEventListener("change", verifier);
+		naissance.addEventListener("input", verifier);
 		fonctionnaire.addEventListener("change", verifier);
 		verifier();
 	}

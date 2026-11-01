@@ -36,14 +36,29 @@ async function candidat(p, c) {
 	await p.select("#c-centre", c.centre);
 	await envoyer(p);
 	await taper(p, "noms", c.noms); await taper(p, "prenoms", c.prenoms);
-	await date(p, "date_naissance", c.naissance);
+	await p.$eval("#c-date_naissance", (e) => { e.value = ""; });
+	await p.type("#c-date_naissance", c.naissance.split("-").reverse().join(""));
 	await taper(p, "lieu_naissance", "Ébolowa");
 	await p.$eval("input[name=sexe][value='2']", (e) => e.click());
 	await envoyer(p);
 	await taper(p, "telephone", c.tel); await taper(p, "email", c.mail); await taper(p, "adresse", "Yaoundé, Mvog-Ada");
 	await p.select("#c-region", "18"); await p.select("#c-departement", "Mvila");
 	await p.select("#c-arrondissement", "EBOLOWA IER");
-	await taper(p, "cni", c.cni); await date(p, "cni_date", "2024-02-10"); await taper(p, "cni_lieu", "Ebolowa");
+	await taper(p, "cni", c.cni); await taper(p, "cni_date", "10022024"); await taper(p, "cni_lieu", "Ebolowa");
+	await envoyer(p);
+}
+async function candidatDebut(p, c) {
+	await aller(p, "/candidature/1");
+	await p.$eval(`input[name=cycle][value=${c.cycle}]`, (e) => e.click());
+	await p.select("#c-diplome", c.diplome);
+	await p.waitForSelector("[data-options] label");
+	await p.$eval(`input[name=parcours][value="${c.parcours}"]`, (e) => e.click());
+	await p.select("#c-centre", c.centre);
+	await envoyer(p);
+	await taper(p, "noms", c.noms); await taper(p, "prenoms", c.prenoms);
+	await p.type("#c-date_naissance", c.naissance.split("-").reverse().join(""));
+	await taper(p, "lieu_naissance", "Ebolowa");
+	await p.$eval("input[name=sexe][value='2']", (e) => e.click());
 	await envoyer(p);
 }
 async function etape45(p, c) {
@@ -116,7 +131,7 @@ await photo(r, "reprendre-pc");
 await taper(r, "identifiant", numero); await date(r, "date_naissance", "2001-01-01");
 await envoyer(r);
 ok(/Aucun dossier/.test(await texte(r)), "reprise refusée avec une mauvaise date");
-await taper(r, "identifiant", "677123456"); await date(r, "date_naissance", "2000-03-14");
+await taper(r, "identifiant", "677123456"); await r.$eval("#c-date_naissance", (e) => { e.value = ""; }); await r.type("#c-date_naissance", "14032000");
 await envoyer(r);
 ok(/mon-dossier/.test(r.url()), "reprise par téléphone");
 
@@ -126,7 +141,7 @@ await candidat(q, { ...A, noms: "Second", prenoms: "Essai", cni: "123456789", te
 ok(/déjà avec ce numéro/.test(await texte(q)), "même CNI refusée");
 await photo(q, "etape3-erreur-pc");
 await taper(q, "cni", "ZZ998877"); await date(q, "cni_date", "2024-02-10"); await envoyer(q);
-await etape45(q, { tx: "SCB20270001" });
+await etape45(q, { tx: "SCB-2027 0001" });
 ok(/déjà utilisé/.test(await texte(q)), "même transaction refusée");
 await taper(q, "transaction_num", "SCB20270002");
 await (await q.$("#c-recu")).uploadFile(RECU);
@@ -135,6 +150,11 @@ await envoyer(q);
 await photo(q, "recap-pc");
 await q.$eval("#c-engagement", (e) => e.click());
 await envoyer(q);
+
+/* Même personne, autre CNI : refusée dès l'identité, accents et casse ignorés. */
+const j = await ouvrir();
+await candidatDebut(j, { ...A, noms: "ngono elodie", prenoms: "marie-therese" });
+ok(/existe déjà à ce nom/.test(await texte(j)), "même identité refusée");
 
 /* Accès protégés */
 const anonyme = await ouvrir();
@@ -156,6 +176,9 @@ ok(/Candidatures reçues/.test(await texte(g)), "tableau de bord");
 await photo(g, "gestion-bord");
 await aller(g, "/gestion/?vue=dossiers&q=NGONO");
 await photo(g, "gestion-liste");
+await Promise.all([g.waitForNavigation(), g.click("td a")]);
+ok(/Même image de reçu/.test(await texte(g)), "même reçu signalé à la scolarité");
+await aller(g, "/gestion/?vue=dossiers&q=NGONO");
 await Promise.all([g.waitForNavigation(), g.click("td a")]);
 await photo(g, "gestion-dossier");
 const decider = async (d, motif) => {

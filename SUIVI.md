@@ -28,7 +28,9 @@ Un dossier avance : paiements à vérifier, pièces attendues, prêts à valider
 ## Règles métier
 
 - Le dossier naît à l'étape identité, jamais à la visite. L'ancienne plateforme avait 2 668 inscriptions vides sur 4 524.
-- Un seul dossier par CNI et par numéro de transaction, pour une session (clés uniques en base).
+- Un seul dossier par CNI et par numéro de transaction, pour une session (clés uniques en base). Le numéro de transaction est comparé sans séparateurs.
+- Même nom, prénoms et date de naissance dans la session : refusé, casse et accents ignorés.
+- Même image de reçu, téléphone ou e-mail qu'un autre dossier : signalé à la scolarité, sans blocage (parent, cybercafé).
 - Diplôme, filière et option suivent `CEB_LIAISONS` (Liaisions.xlsx), revérifiés côté serveur.
 - Pas de mot de passe : reprise par numéro candidat ou téléphone, avec la date de naissance (6 essais, puis 15 minutes d'attente).
 - Limite d'âge : avertit et signale à la scolarité, ne bloque pas. Fonctionnaires exemptés.
@@ -52,7 +54,7 @@ Le candidat est prévenu de chaque décision, dans `/mon-dossier/notifications` 
 
 ## Tests
 
-`tests/parcours.mjs` : parcours complet dans Chrome avec des candidats fictifs (41 vérifications, voir l'en-tête du fichier). Dernier passage le 2026-11-01 : tout est passé.
+`tests/parcours.mjs` : parcours complet dans Chrome avec des candidats fictifs (43 vérifications, voir l'en-tête du fichier). Dernier passage le 2026-11-01 : tout est passé.
 
 `tests/demo-donnees.php` : remplit une base de test avec des candidats fictifs (jamais en production).
 

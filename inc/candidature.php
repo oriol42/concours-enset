@@ -33,6 +33,15 @@ function ceb_date_valide( $valeur ) {
 	return $d && $d->format( 'Y-m-d' ) === $valeur ? $d : null;
 }
 
+/** Date reçue en JJ/MM/AAAA (ou AAAA-MM-JJ) ; une saisie illisible est rendue telle quelle. */
+function ceb_date_post( $cle ) {
+	$brut = ceb_post( $cle );
+	if ( preg_match( '#^(\d{1,2})[/.\- ](\d{1,2})[/.\- ](\d{4})$#', $brut, $m ) ) {
+		return sprintf( '%04d-%02d-%02d', $m[3], $m[2], $m[1] );
+	}
+	return $brut;
+}
+
 /** Numéro normalisé, sans indicatif pour le Cameroun ; vide s'il est invalide. */
 function ceb_normaliser_telephone( $valeur ) {
 	$brut = preg_replace( '/[\s.\-()]/', '', (string) $valeur );
@@ -87,11 +96,12 @@ function ceb_valider_etape1() {
 	return array( $d, $e );
 }
 
-function ceb_valider_etape2() {
+function ceb_valider_etape2( $dossier ) {
+	global $wpdb;
 	$d = array(
 		'noms'           => mb_strtoupper( ceb_texte( 'noms' ) ),
 		'prenoms'        => mb_strtoupper( ceb_texte( 'prenoms' ) ),
-		'date_naissance' => ceb_post( 'date_naissance' ),
+		'date_naissance' => ceb_date_post( 'date_naissance' ),
 		'lieu_naissance' => mb_strtoupper( ceb_texte( 'lieu_naissance' ) ),
 		'sexe'           => ceb_post( 'sexe' ),
 		'nationalite'    => ceb_texte( 'nationalite', 60 ),
@@ -107,7 +117,16 @@ function ceb_valider_etape2() {
 	}
 	$age = ceb_date_valide( $d['date_naissance'] ) ? ceb_age_au( $d['date_naissance'], ceb_aujourdhui() ) : 0;
 	if ( $age < 15 || $age > 70 ) {
-		$e['date_naissance'] = 'Vérifie ta date de naissance.';
+		$e['date_naissance'] = 'Vérifie ta date de naissance, par exemple 14/03/2005.';
+	} elseif ( mb_strlen( $d['noms'] ) >= 2 ) {
+		/* La comparaison ignore casse et accents : ÉLODIE et Elodie sont la même personne. */
+		$existe = $wpdb->get_var( $wpdb->prepare(
+			'SELECT id FROM ' . ceb_table() . ' WHERE annee = %s AND noms = %s AND prenoms = %s AND date_naissance = %s AND id <> %d LIMIT 1',
+			ceb_reglage( 'annee' ), $d['noms'], $d['prenoms'], $d['date_naissance'], $dossier ? $dossier->id : 0
+		) );
+		if ( $existe ) {
+			$e['noms'] = 'Un dossier existe déjà à ce nom avec cette date de naissance. Utilise « Reprendre mon dossier », ou contacte la scolarité en cas d\'homonyme.';
+		}
 	}
 	if ( ! isset( CEB_SEXES[ $d['sexe'] ] ) ) {
 		$e['sexe'] = 'Indique ton sexe.';
@@ -128,7 +147,7 @@ function ceb_valider_etape3( $dossier ) {
 		'departement'    => ceb_post( 'departement' ),
 		'arrondissement' => ceb_post( 'arrondissement' ),
 		'cni'            => strtoupper( preg_replace( '/[\s.\-]/', '', ceb_post( 'cni' ) ) ),
-		'cni_date'       => ceb_post( 'cni_date' ),
+		'cni_date'       => ceb_date_post( 'cni_date' ),
 		'cni_lieu'       => mb_strtoupper( ceb_texte( 'cni_lieu', 80 ) ),
 		'urgence_nom'    => ceb_texte( 'urgence_nom' ),
 		'urgence_tel'    => ceb_normaliser_telephone( ceb_post( 'urgence_tel' ) ),
@@ -203,12 +222,13 @@ function ceb_valider_etape4( $dossier ) {
 
 function ceb_valider_etape5( $dossier ) {
 	global $wpdb;
-	$d = array( 'transaction_num' => strtoupper( preg_replace( '/\s+/', '', ceb_post( 'transaction_num' ) ) ) );
+	/* Sans séparateurs : SCB-123 et SCB 123 désignent le même reçu. */
+	$d = array( 'transaction_num' => strtoupper( preg_replace( '/[^A-Za-z0-9]/', '', ceb_post( 'transaction_num' ) ) ) );
 	$e = array();
 	if ( 'verifie' === $dossier->paiement ) {
 		return array( array(), array() ); /* Paiement déjà vérifié : plus rien à changer ici. */
 	}
-	if ( ! preg_match( '/^[A-Z0-9\/\-]{6,30}$/', $d['transaction_num'] ) || $d['transaction_num'] === $dossier->numero ) {
+	if ( ! preg_match( '/^[A-Z0-9]{6,30}$/', $d['transaction_num'] ) || $d['transaction_num'] === $dossier->numero ) {
 		$e['transaction_num'] = 'Saisis le numéro imprimé sur ton reçu de banque.';
 	} else {
 		$existe = $wpdb->get_var( $wpdb->prepare( 'SELECT id FROM ' . ceb_table() . ' WHERE annee = %s AND transaction_num = %s AND id <> %d', $dossier->annee, $d['transaction_num'], $dossier->id ) );
@@ -222,6 +242,7 @@ function ceb_valider_etape5( $dossier ) {
 	} elseif ( ! empty( $recu['nom'] ) ) {
 		$d['recu']      = $recu['nom'];
 		$d['recu_type'] = $recu['type'];
+		$d['recu_empreinte'] = (string) sha1_file( ceb_dossier_fichiers() . '/' . $recu['nom'] );
 	} elseif ( ! $dossier->recu ) {
 		$e['recu'] = 'Ajoute la photo de ton reçu.';
 	}
@@ -278,7 +299,7 @@ function ceb_action_etape() {
 			list( $d, $e ) = ceb_valider_etape1();
 			break;
 		case 2:
-			list( $d, $e ) = ceb_valider_etape2();
+			list( $d, $e ) = ceb_valider_etape2( $dossier );
 			break;
 		case 3:
 			list( $d, $e ) = ceb_valider_etape3( $dossier );
@@ -404,7 +425,7 @@ function ceb_envoyer_confirmation( $d ) {
 function ceb_action_reprendre() {
 	global $wpdb;
 	$cle       = strtoupper( preg_replace( '/\s+/', '', ceb_post( 'identifiant' ) ) );
-	$naissance = ceb_post( 'date_naissance' );
+	$naissance = ceb_date_post( 'date_naissance' );
 	$ip        = 'ip' . ceb_ip();
 	if ( ceb_essais_bloques( $ip ) || ceb_essais_bloques( 'cle' . $cle ) ) {
 		ceb_memoriser( array( 'identifiant' => $cle ), array( 'general' => 'Trop d\'essais. Réessaie dans 15 minutes.' ) );
