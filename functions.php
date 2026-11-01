@@ -10,6 +10,7 @@
  *   inc/fichiers.php     photo et reçu : contrôle, réencodage, lecture protégée
  *   inc/candidature.php  étapes du formulaire, validation, soumission
  *   inc/fiche-pdf.php    fiche officielle et récépissé en PDF
+ *   inc/notifications.php centre de notifications du candidat et de l'équipe
  *   inc/gestion.php      espace scolarité : décisions, statistiques, exports
  *   inc/vues.php         gabarits communs, champs, icônes
  *   inc/routes.php       adresses propres et traitement des formulaires
@@ -23,7 +24,7 @@ define( 'CEB_VERSION', '1.0.0' );
 define( 'CEB_DIR', get_template_directory() );
 define( 'CEB_URI', get_template_directory_uri() );
 
-foreach ( array( 'referentiel', 'regions', 'reglages', 'base', 'session', 'fichiers', 'candidature', 'fiche-pdf', 'gestion', 'vues', 'routes' ) as $ceb_module ) {
+foreach ( array( 'referentiel', 'regions', 'reglages', 'base', 'session', 'fichiers', 'candidature', 'fiche-pdf', 'notifications', 'gestion', 'vues', 'routes' ) as $ceb_module ) {
 	require_once CEB_DIR . '/inc/' . $ceb_module . '.php';
 }
 
@@ -55,5 +56,9 @@ add_action( 'wp_enqueue_scripts', static function () {
 	}
 	if ( 'gestion' === $page ) {
 		wp_enqueue_style( 'ceb-gestion', CEB_URI . '/assets/css/gestion.css', array( 'ceb-app' ), $v( 'assets/css/gestion.css' ) );
+		if ( 'bord' === sanitize_key( $_GET['vue'] ?? 'bord' ) && ! isset( $_GET['dossier'] ) ) { // phpcs:ignore -- lecture seule
+			wp_enqueue_script( 'chartjs', CEB_URI . '/assets/js/vendor/chart.umd.min.js', array(), '4.5.1', array( 'strategy' => 'defer', 'in_footer' => true ) );
+			wp_enqueue_script( 'ceb-bord', CEB_URI . '/assets/js/gestion-bord.js', array( 'chartjs' ), $v( 'assets/js/gestion-bord.js' ), array( 'strategy' => 'defer', 'in_footer' => true ) );
+		}
 	}
 } );

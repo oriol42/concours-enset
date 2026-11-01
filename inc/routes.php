@@ -16,7 +16,7 @@
 
 defined( 'ABSPATH' ) || exit;
 
-const CEB_ROUTES_VERSION = '1';
+const CEB_ROUTES_VERSION = '2';
 
 function ceb_regles() {
 	return array(
@@ -24,6 +24,7 @@ function ceb_regles() {
 		'^candidature/([1-6])/?$'         => 'index.php?ceb_page=candidature&ceb_arg=$matches[1]',
 		'^mon-dossier/?$'                 => 'index.php?ceb_page=mon-dossier',
 		'^mon-dossier/fiche/?$'           => 'index.php?ceb_page=fiche',
+		'^mon-dossier/notifications/?$'   => 'index.php?ceb_page=notifications',
 		'^reprendre/?$'                   => 'index.php?ceb_page=reprendre',
 		'^quitter/?$'                     => 'index.php?ceb_page=quitter',
 		'^verifier/([a-f0-9]{32})/?$'     => 'index.php?ceb_page=verifier&ceb_arg=$matches[1]',
@@ -100,6 +101,16 @@ add_action( 'template_redirect', static function () {
 			}
 			ceb_envoyer_fiche( $d );
 			break;
+		case 'notifications':
+			$d = ceb_dossier_courant();
+			if ( ! $d ) {
+				ceb_rediriger( ceb_url( 'reprendre' ) );
+			}
+			if ( isset( $_GET['json'] ) ) {
+				ceb_envoyer_json( ceb_non_lues_candidat( $d->id ) );
+			}
+			ceb_afficher_page( 'notifications' );
+			break;
 		case 'reprendre':
 			ceb_afficher_page( 'reprendre' );
 			break;
@@ -161,6 +172,9 @@ function ceb_page_gestion() {
 	$droits = array( 'reglages' => 'ceb_regler', 'equipe' => 'ceb_equipe', 'activite' => 'ceb_exporter' );
 	if ( isset( $droits[ $vue ] ) ) {
 		ceb_exiger( $droits[ $vue ] );
+	}
+	if ( 'notifs-json' === $vue ) {
+		ceb_envoyer_json( ceb_non_lues_equipe(), ceb_derniere_equipe() );
 	}
 	if ( 'export-csv' === $vue ) {
 		ceb_exporter_csv();

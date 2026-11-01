@@ -20,8 +20,7 @@ Plateforme d'inscription au concours d'entrée de l'ENSET d'Ebolowa. Thème Word
 | Rôle | Peut |
 | --- | --- |
 | Direction | Consulter dossiers et chiffres |
-| Agent de scolarité | + vérifier les paiements, pointer les pièces |
-| Responsable | + valider, renvoyer, rouvrir, exporter, lire le journal |
+| Agent de scolarité | + vérifier les paiements, pointer les pièces, valider, renvoyer, exporter, lire le journal |
 | Administrateur | + réglages et équipe |
 
 Un dossier avance : paiements à vérifier, pièces attendues, prêts à valider, validés. Les droits sont revérifiés côté serveur à chaque action, et chaque décision porte le nom de son auteur.
@@ -38,6 +37,10 @@ Un dossier avance : paiements à vérifier, pièces attendues, prêts à valider
 - Dossier validé ou session close : plus de modification par le candidat. La fiche reste disponible.
 - TCPDF supprime une image donnée par chemin : toujours la passer en mémoire avec `'@'`.
 
+## Notifications
+
+Le candidat est prévenu de chaque décision, dans `/mon-dossier/notifications` et par courriel. L'équipe voit les nouvelles candidatures et les corrections dans `/gestion/?vue=notifications`, avec un repère de lecture par personne. La cloche se met à jour toutes les 30 secondes.
+
 ## À confirmer avec l'ENSET
 
 - Arrêté de la session : dates, année, centres (l'arrêté 2026/2027 cité par les sites tiers donne Bafoussam, Bambili, Buea, Ngaoundéré, Yaoundé, Ebolowa ; le fichier reçu donne Bafoussam, Bertoua, Douala, Ebolowa, Garoua, Yaoundé), limites d'âge et date de référence.
@@ -49,7 +52,7 @@ Un dossier avance : paiements à vérifier, pièces attendues, prêts à valider
 
 ## Tests
 
-`tests/parcours.mjs` : parcours complet dans Chrome avec des candidats fictifs (39 vérifications, voir l'en-tête du fichier). Dernier passage le 2026-11-01 : tout est passé.
+`tests/parcours.mjs` : parcours complet dans Chrome avec des candidats fictifs (41 vérifications, voir l'en-tête du fichier). Dernier passage le 2026-11-01 : tout est passé.
 
 `tests/demo-donnees.php` : remplit une base de test avec des candidats fictifs (jamais en production).
 

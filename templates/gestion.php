@@ -29,7 +29,7 @@ $tete      = static function ( $titre, $sous = '', $actions = '' ) {
 };
 ceb_debut( array( 'titre' => 'Scolarité', 'corps' => 'page-gestion', 'nu' => true ) );
 ?>
-<div class="gestion">
+<div class="gestion" data-cloche="<?php echo esc_url( add_query_arg( 'vue', 'notifs-json', $base ) ); ?>">
 	<aside class="barre">
 		<a class="marque" href="<?php echo esc_url( $base ); ?>">
 			<img src="<?php echo esc_url( CEB_URI . '/assets/images/enset-marque.png' ); ?>" alt="" width="44" height="44">
@@ -40,6 +40,7 @@ ceb_debut( array( 'titre' => 'Scolarité', 'corps' => 'page-gestion', 'nu' => tr
 			$liens = array(
 				'bord'     => array( 'Tableau de bord', 'tableau', 0, 'ceb_voir' ),
 				'dossiers' => array( 'Dossiers', 'dossier', (int) $compteurs->paiements, 'ceb_voir' ),
+				'notifications' => array( 'Notifications', 'cloche', ceb_non_lues_equipe(), 'ceb_voir' ),
 				'activite' => array( 'Journal', 'horloge', 0, 'ceb_exporter' ),
 				'equipe'   => array( 'Équipe', 'dossiers', 0, 'ceb_equipe' ),
 				'reglages' => array( 'Réglages', 'reglages', 0, 'ceb_regler' ),
@@ -51,7 +52,11 @@ ceb_debut( array( 'titre' => 'Scolarité', 'corps' => 'page-gestion', 'nu' => tr
 				?>
 				<a href="<?php echo esc_url( add_query_arg( 'vue', $k, $base ) ); ?>"<?php echo $vue === $k ? ' aria-current="page"' : ''; ?>>
 					<?php echo ceb_icone( $l[1], 19 ); ?><span><?php echo esc_html( $l[0] ); ?></span>
-					<?php if ( $l[2] ) : ?><b title="Paiements à vérifier"><?php echo (int) $l[2]; ?></b><?php endif; ?>
+					<?php if ( 'notifications' === $k ) : ?>
+						<b data-cloche-nombre<?php echo $l[2] ? '' : ' hidden'; ?>><?php echo (int) $l[2]; ?></b>
+					<?php elseif ( $l[2] ) : ?>
+						<b title="Paiements à vérifier"><?php echo (int) $l[2]; ?></b>
+					<?php endif; ?>
 				</a>
 			<?php endforeach; ?>
 		</nav>
@@ -76,6 +81,8 @@ ceb_debut( array( 'titre' => 'Scolarité', 'corps' => 'page-gestion', 'nu' => tr
 			require CEB_DIR . '/templates/gestion-reglages.php';
 		} elseif ( 'equipe' === $vue ) {
 			require CEB_DIR . '/templates/gestion-equipe.php';
+		} elseif ( 'notifications' === $vue ) {
+			require CEB_DIR . '/templates/gestion-notifications.php';
 		} elseif ( 'activite' === $vue ) {
 			require CEB_DIR . '/templates/gestion-activite.php';
 		} else {

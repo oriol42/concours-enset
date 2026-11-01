@@ -375,7 +375,13 @@ function ceb_action_soumettre() {
 	ceb_maj_dossier( $dossier->id, $maj );
 	if ( $premier ) {
 		ceb_journaliser( $dossier->id, 'Candidat', 'Dossier envoyé' );
-		ceb_envoyer_confirmation( $dossier );
+		$nom = trim( $dossier->noms . ' ' . $dossier->prenoms );
+		if ( 'rejete' === $dossier->statut ) {
+			ceb_notifier_equipe( $dossier, 'Dossier corrigé', $nom . ' a corrigé son dossier ' . $dossier->numero . ' et l\'a renvoyé.' );
+		} else {
+			ceb_notifier_equipe( $dossier, 'Nouvelle candidature', $nom . ', ' . ( CEB_OPTIONS[ $dossier->option_code ] ?? '' ) . ', centre de ' . ( CEB_CENTRES[ $dossier->centre ] ?? '' ) . '.' );
+			ceb_envoyer_confirmation( $dossier );
+		}
 	}
 	$_SESSION['ceb_telecharger'] = true;
 	ceb_flash( 'succes', 'Ton dossier est enregistré. Imprime ta fiche et dépose ton dossier complet.' );

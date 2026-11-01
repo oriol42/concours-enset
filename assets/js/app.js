@@ -46,6 +46,29 @@
 	/* Retour arrière du navigateur : le bouton doit redevenir actif. */
 	addEventListener("pageshow", () => $$("[data-envoi]").forEach((b) => { b.disabled = false; }));
 
+	/* Cloche : compteur actualisé toutes les 30 secondes, avec une annonce à l'arrivée. */
+	const cloche = document.querySelector("[data-cloche]");
+	if (cloche) {
+		const pastille = document.querySelector("[data-cloche-nombre]");
+		const annonce = (texte) => {
+			const t = document.createElement("div");
+			t.className = "annonce"; t.setAttribute("role", "status"); t.textContent = texte;
+			document.body.append(t);
+			setTimeout(() => t.remove(), 6000);
+		};
+		let dernier = +pastille.textContent || 0;
+		setInterval(async () => {
+			if (document.hidden) return;
+			try {
+				const r = await (await fetch(cloche.dataset.cloche, { credentials: "same-origin" })).json();
+				if (r.n > dernier) annonce(r.titre || "Nouvelle notification");
+				dernier = r.n;
+				pastille.textContent = r.n;
+				pastille.hidden = !r.n;
+			} catch { /* Réseau coupé : nouvel essai au prochain passage. */ }
+		}, 30000);
+	}
+
 	document.querySelector("[data-resume]")?.focus();
 	document.querySelector("[data-ouvrir]")?.focus();
 })();

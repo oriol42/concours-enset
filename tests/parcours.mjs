@@ -182,7 +182,12 @@ ok(/Toutes les pièces doivent/.test(await texte(g)), "validation impossible san
 await g.$$eval("input[name='pieces[]']", (c) => c.forEach((x) => { x.checked = true; }));
 await Promise.all([g.waitForNavigation(), g.$eval("form.pointage button", (b) => b.click())]);
 await decider("valider");
-ok(/Dossier validé/.test(await texte(g)), "journal des décisions");
+ok(/Dossier validé/.test(await g.$eval("#t-journal", (e) => e.textContent)), "journal des décisions");
+await aller(p, "/mon-dossier/notifications");
+ok(/Paiement vérifié/.test(await texte(p)) && /Dossier à corriger/.test(await texte(p)) && /Dossier validé/.test(await texte(p)), "le candidat reçoit ses notifications");
+await photo(p, "notifs-candidat");
+await aller(g, "/gestion/?vue=notifications");
+ok(/Nouvelle candidature/.test(await texte(g)) && /Dossier corrigé/.test(await texte(g)), "l'équipe reçoit ses notifications");
 
 /* Droits : un agent vérifie et pointe, sans valider ni régler. */
 await aller(g, "/gestion/?vue=equipe");
@@ -197,13 +202,17 @@ await Promise.all([ag.waitForNavigation(), ag.click("#wp-submit")]);
 await aller(ag, "/gestion/");
 ok(!/Réglages/.test(await texte(ag)) && !/Équipe/.test(await texte(ag)), "menu limité pour un agent");
 ok((await ag.goto(URLB + "/gestion/?vue=reglages")).status() === 403, "réglages refusés à un agent");
-ok((await ag.goto(URLB + "/gestion/?vue=export-csv")).status() === 403, "export refusé à un agent");
 await aller(ag, "/gestion/?vue=dossiers&file=paiements");
 await Promise.all([ag.waitForNavigation(), ag.click("td a")]);
-ok(!(await ag.$("form.decision input[value=valider]")), "pas de validation pour un agent");
 await ag.$eval("form.decision input[value=verifier_paiement]", (x) => x.form.querySelector("button").click());
 await ag.waitForNavigation();
 ok(/Paiement vérifié/.test(await texte(ag)), "un agent vérifie un paiement");
+await aller(g, "/gestion/?vue=equipe");
+await Promise.all([g.waitForNavigation(), g.$eval(".membres select", (s) => { s.value = "ceb_direction"; s.form.submit(); })]);
+ok((await ag.goto(URLB + "/gestion/?vue=export-csv")).status() === 403, "export refusé à la direction");
+await aller(ag, "/gestion/?vue=dossiers");
+await Promise.all([ag.waitForNavigation(), ag.click("td a")]);
+ok(!(await ag.$("form.decision")), "la direction ne décide pas");
 await aller(g, "/gestion/?vue=equipe");
 await Promise.all([g.waitForNavigation(), g.$eval(".membres button", (b) => { window.confirm = () => true; b.click(); })]);
 ok((await ag.goto(URLB + "/gestion/")).status() === 403, "accès retiré effectif");

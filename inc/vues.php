@@ -14,6 +14,7 @@ function ceb_url( $chemin = '' ) {
 function ceb_icone( $nom, $taille = 20 ) {
 	static $traces = array(
 		'dossier'     => '<path d="M4 20h16a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.93a2 2 0 0 1-1.66-.9l-.82-1.2A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2Z"/>',
+		'cloche'      => '<path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9M10.3 21a1.94 1.94 0 0 0 3.4 0"/>',
 		'tableau'     => '<rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/>',
 		'dossiers'    => '<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/>',
 		'reglages'    => '<path d="M4 21v-7M4 10V3M12 21v-9M12 8V3M20 21v-5M20 12V3M1 14h6M9 8h6M17 16h6"/>',
@@ -101,6 +102,8 @@ function ceb_entete() {
 			</nav>
 			<div class="bandeau__actions">
 				<?php if ( $dossier ) : ?>
+					<?php $non_lues = ceb_non_lues_candidat( $dossier->id ); ?>
+					<a class="cloche" href="<?php echo esc_url( ceb_url( 'mon-dossier/notifications' ) ); ?>" aria-label="Notifications" data-cloche="<?php echo esc_url( ceb_url( 'mon-dossier/notifications' ) . '?json=1' ); ?>"><?php echo ceb_icone( 'cloche', 21 ); ?><b data-cloche-nombre<?php echo $non_lues ? '' : ' hidden'; ?>><?php echo (int) $non_lues; ?></b></a>
 					<a class="btn btn--primaire" href="<?php echo esc_url( ceb_url( 'mon-dossier' ) ); ?>">Mon dossier</a>
 				<?php else : ?>
 					<a class="btn btn--contour bandeau__reprendre" href="<?php echo esc_url( ceb_url( 'reprendre' ) ); ?>">Reprendre</a>

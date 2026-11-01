@@ -24,23 +24,26 @@ const CEB_PAIEMENTS = array(
 );
 
 /*
- * Droits. Chaque rôle reprend ceux du précédent :
+ * Droits :
  *   Direction       consulte dossiers et chiffres, sans rien modifier ;
- *   Agent           vérifie les paiements et pointe les pièces déposées ;
- *   Responsable     valide ou renvoie les dossiers, exporte, lit le journal ;
- *   Administrateur  règle la session et gère l'équipe.
+ *   Agent           traite tout le dossier : paiement, pièces, validation, exports ;
+ *   Administrateur  règle en plus la session et gère l'équipe.
  */
 const CEB_ROLES = array(
-	'ceb_direction'   => array( 'nom' => 'Direction', 'aide' => 'Consulte, sans rien modifier', 'caps' => array( 'ceb_voir' ) ),
-	'ceb_scolarite'   => array( 'nom' => 'Agent de scolarité', 'aide' => 'Vérifie les paiements, pointe les pièces', 'caps' => array( 'ceb_voir', 'ceb_paiements', 'ceb_pieces' ) ),
-	'ceb_responsable' => array( 'nom' => 'Responsable', 'aide' => 'Valide les dossiers, exporte, lit le journal', 'caps' => array( 'ceb_voir', 'ceb_paiements', 'ceb_pieces', 'ceb_valider', 'ceb_exporter' ) ),
-	'ceb_admin'       => array( 'nom' => 'Administrateur', 'aide' => 'Règle la session, gère l\'équipe', 'caps' => array( 'ceb_voir', 'ceb_paiements', 'ceb_pieces', 'ceb_valider', 'ceb_exporter', 'ceb_regler', 'ceb_equipe' ) ),
+	'ceb_direction' => array( 'nom' => 'Direction', 'aide' => 'Consulte les dossiers et les chiffres, sans rien modifier', 'caps' => array( 'ceb_voir' ) ),
+	'ceb_scolarite' => array( 'nom' => 'Agent de scolarité', 'aide' => 'Traite les dossiers : paiements, pièces, validation, exports', 'caps' => array( 'ceb_voir', 'ceb_paiements', 'ceb_pieces', 'ceb_valider', 'ceb_exporter' ) ),
+	'ceb_admin'     => array( 'nom' => 'Administrateur', 'aide' => 'Fait tout, règle la session et gère l\'équipe', 'caps' => array( 'ceb_voir', 'ceb_paiements', 'ceb_pieces', 'ceb_valider', 'ceb_exporter', 'ceb_regler', 'ceb_equipe' ) ),
 );
 
 add_action( 'after_setup_theme', static function () {
-	if ( get_option( 'ceb_role_version' ) === '2' ) {
+	if ( get_option( 'ceb_role_version' ) === '3' ) {
 		return;
 	}
+	/* Ancien rôle Responsable : fusionné avec Agent de scolarité. */
+	foreach ( get_users( array( 'role' => 'ceb_responsable' ) ) as $ancien ) {
+		$ancien->set_role( 'ceb_scolarite' );
+	}
+	remove_role( 'ceb_responsable' );
 	foreach ( CEB_ROLES as $role => $r ) {
 		remove_role( $role );
 		add_role( $role, $r['nom'] . ' (concours)', array_fill_keys( array_merge( array( 'read' ), $r['caps'] ), true ) );
@@ -51,7 +54,7 @@ add_action( 'after_setup_theme', static function () {
 			$admin->add_cap( $cap );
 		}
 	}
-	update_option( 'ceb_role_version', '2', false );
+	update_option( 'ceb_role_version', '3', false );
 } );
 
 function ceb_peut( $cap ) {
@@ -70,11 +73,11 @@ function ceb_exiger( $cap ) {
 
 /*
  * Files de travail : un dossier avance d'une file à la suivante.
- * Paiements à vérifier, puis pièces attendues au dépôt, puis prêts à valider.
+ * Paiement à vérifier, puis pièces à recevoir à la scolarité, puis prêt à valider.
  */
 const CEB_FILES = array(
 	'paiements' => array( 'nom' => 'Paiements à vérifier', 'sql' => "statut = 'soumis' AND paiement = 'attente'" ),
-	'pieces'    => array( 'nom' => 'Pièces attendues', 'sql' => "statut = 'soumis' AND paiement = 'verifie' AND depot_le IS NULL" ),
+	'pieces'    => array( 'nom' => 'Pièces à recevoir', 'sql' => "statut = 'soumis' AND paiement = 'verifie' AND depot_le IS NULL" ),
 	'valider'   => array( 'nom' => 'Prêts à valider', 'sql' => "statut = 'soumis' AND paiement = 'verifie' AND depot_le IS NOT NULL" ),
 	'corriger'  => array( 'nom' => 'À corriger', 'sql' => "statut = 'rejete'" ),
 	'valides'   => array( 'nom' => 'Validés', 'sql' => "statut = 'valide'" ),
@@ -172,7 +175,8 @@ function ceb_statistiques() {
 	$repartir = static function ( $col ) use ( $wpdb, $t, $a ) {
 		return $wpdb->get_results( $wpdb->prepare( "SELECT $col cle, COUNT(*) n FROM $t WHERE annee = %s AND statut <> 'brouillon' GROUP BY $col ORDER BY n DESC", $a ) );
 	};
-	return array( 'totaux' => $totaux, 'filieres' => $repartir( 'filiere' ), 'centres' => $repartir( 'centre' ), 'cycles' => $repartir( 'cycle' ) );
+	$filieres_sexe = $wpdb->get_results( $wpdb->prepare( "SELECT filiere, sexe, COUNT(*) n FROM $t WHERE annee = %s AND statut <> 'brouillon' GROUP BY filiere, sexe", $a ) );
+	return array( 'totaux' => $totaux, 'centres' => $repartir( 'centre' ), 'cycles' => $repartir( 'cycle' ), 'sexes' => $repartir( 'sexe' ), 'filieres_sexe' => $filieres_sexe );
 }
 
 /** Décisions sur un dossier : chacune suit un droit et s'inscrit au journal. */
@@ -205,19 +209,25 @@ function ceb_action_decision() {
 		case 'verifier_paiement':
 			ceb_maj_dossier( $dossier->id, array( 'paiement' => 'verifie' ) );
 			ceb_journaliser( $dossier->id, $auteur, 'Paiement vérifié' );
+			ceb_notifier_candidat( $dossier, 'Paiement vérifié', 'Ton paiement est vérifié. Dépose maintenant tes pièces à la scolarité.' );
 			break;
 		case 'rejeter_paiement':
 			ceb_maj_dossier( $dossier->id, array( 'paiement' => 'rejete', 'statut' => 'rejete', 'motif' => $motif ) );
 			ceb_journaliser( $dossier->id, $auteur, 'Paiement rejeté : ' . $motif );
+			ceb_notifier_candidat( $dossier, 'Paiement rejeté', 'Motif : ' . $motif . '. Corrige ton dossier et renvoie-le.' );
 			break;
 		case 'pieces':
 			$total  = count( ceb_pieces_dossier( $dossier ) );
+			$avant  = (bool) $dossier->depot_le;
 			$coches = array_values( array_filter( array_map( 'intval', (array) ( $_POST['pieces'] ?? array() ) ), static fn( $i ) => $i >= 0 && $i < $total ) );
 			ceb_maj_dossier( $dossier->id, array(
 				'pieces_recues' => implode( ',', $coches ),
 				'depot_le'      => count( $coches ) === $total ? ( $dossier->depot_le ?: current_time( 'mysql' ) ) : null,
 			) );
 			ceb_journaliser( $dossier->id, $auteur, 'Pièces reçues : ' . count( $coches ) . ' sur ' . $total );
+			if ( ! $avant && count( $coches ) === $total ) {
+				ceb_notifier_candidat( $dossier, 'Pièces reçues', 'La scolarité a reçu toutes tes pièces.' );
+			}
 			break;
 		case 'valider':
 			if ( 'verifie' !== $dossier->paiement ) {
@@ -230,14 +240,17 @@ function ceb_action_decision() {
 			}
 			ceb_maj_dossier( $dossier->id, array( 'statut' => 'valide', 'motif' => '' ) );
 			ceb_journaliser( $dossier->id, $auteur, 'Dossier validé' );
+			ceb_notifier_candidat( $dossier, 'Dossier validé', 'Ton dossier est validé : tu es admis à composer au centre de ' . ( CEB_CENTRES[ $dossier->centre ] ?? '' ) . '.' );
 			break;
 		case 'rejeter':
 			ceb_maj_dossier( $dossier->id, array( 'statut' => 'rejete', 'motif' => $motif ) );
 			ceb_journaliser( $dossier->id, $auteur, 'Renvoyé au candidat : ' . $motif );
+			ceb_notifier_candidat( $dossier, 'Dossier à corriger', 'Motif : ' . $motif . '. Corrige ton dossier et renvoie-le.' );
 			break;
 		case 'rouvrir':
 			ceb_maj_dossier( $dossier->id, array( 'statut' => 'soumis' ) );
 			ceb_journaliser( $dossier->id, $auteur, 'Dossier rouvert' );
+			ceb_notifier_candidat( $dossier, 'Dossier rouvert', 'La scolarité a rouvert ton dossier pour le réexaminer.' );
 			break;
 	}
 	ceb_flash( 'succes', 'Décision enregistrée.' );

@@ -8,7 +8,7 @@
 
 defined( 'ABSPATH' ) || exit;
 
-const CEB_BASE_VERSION = '2';
+const CEB_BASE_VERSION = '3';
 
 function ceb_table( $nom = 'dossiers' ) {
 	global $wpdb;
@@ -76,6 +76,17 @@ function ceb_schema() {
 			UNIQUE KEY transaction_annee (annee, transaction_num),
 			KEY liste (annee, statut, paiement),
 			KEY telephone (telephone)
+		) $charset",
+		"CREATE TABLE IF NOT EXISTS {$wpdb->prefix}ceb_notifs (
+			id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+			cible VARCHAR(10) NOT NULL,
+			dossier_id BIGINT UNSIGNED NOT NULL,
+			titre VARCHAR(120) NOT NULL,
+			texte VARCHAR(255) NOT NULL,
+			lu TINYINT(1) NOT NULL DEFAULT 0,
+			cree_le DATETIME NOT NULL,
+			PRIMARY KEY (id),
+			KEY boite (cible, dossier_id, lu)
 		) $charset",
 		"CREATE TABLE IF NOT EXISTS $j (
 			id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,

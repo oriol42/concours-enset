@@ -51,4 +51,7 @@ for ( $i = 0; $i < $n; $i++ ) {
 		'pieces_recues' => 'valide' === $statut || ( 'verifie' === $paiement && $etat % 2 ) ? '0,1,2,3,4,5,6,7,8' : '',
 	) );
 }
+foreach ( array_slice( ceb_file( 'paiements', 3 ), 0, 3 ) as $d ) {
+	ceb_notifier_equipe( $d, 'Nouvelle candidature', trim( $d->noms . ' ' . $d->prenoms ) . ', ' . ( CEB_OPTIONS[ $d->option_code ] ?? '' ) . '.' );
+}
 echo "$n dossiers fictifs créés\n";
