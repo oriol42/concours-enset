@@ -433,6 +433,7 @@ dd { margin: 0; font-weight: 600; overflow-wrap: anywhere; }
 	.marque__nom small, .bandeau--connecte .marque__nom { display: none; }
 	.pieces { columns: 1; }
 	.heros__actions .btn { width: 100%; }
+	.heros__lien { display: flex; align-items: center; justify-content: center; width: 100%; min-height: 52px; border: 1.5px solid var(--filet-fort); border-radius: 999px; text-decoration: none; }
 	.ecole__photos img:first-child { width: 100%; }
 	.offre__barre .onglets { width: 100%; }
 	.onglets button { flex: 1; padding-inline: .6rem; white-space: nowrap; font-size: .96rem; }
