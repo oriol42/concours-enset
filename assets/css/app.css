@@ -81,9 +81,6 @@ a.evitement:focus { left: 1rem; top: 1rem; width: auto; height: auto; z-index: 1
 .bandeau__ligne { display: flex; align-items: center; gap: 1.5rem; min-height: 74px; }
 .bandeau__liens { display: flex; gap: 1.9rem; margin-left: auto; }
 .bandeau__liens a { position: relative; display: inline-flex; align-items: center; gap: .35rem; color: var(--encre); text-decoration: none; font-weight: 600; }
-.bandeau__liens a[aria-current] { color: var(--enset); box-shadow: 0 2px 0 var(--enset); padding-block: .2rem; }
-.bandeau__liens b { min-width: 20px; padding: 0 .3rem; border-radius: 999px; background: var(--danger); color: #fff; font-size: .76rem; line-height: 20px; text-align: center; }
-.bandeau__liens--espace { margin-left: 2.2rem; margin-right: auto; }
 .bandeau__actions { display: flex; gap: .6rem; }
 .bandeau__actions .btn { min-height: 44px; }
 @media (hover: hover) and (pointer: fine) { .bandeau__liens a:hover { color: var(--enset); } }
@@ -99,11 +96,6 @@ a.evitement:focus { left: 1rem; top: 1rem; width: auto; height: auto; z-index: 1
 .menu nav { position: absolute; left: 0; right: 0; top: 100%; display: grid; padding: .4rem 1.25rem .9rem; background: var(--blanc); border-bottom: 1px solid var(--filet); box-shadow: var(--ombre); animation: feuille-entre 200ms var(--sortie); }
 .menu nav a { display: flex; align-items: center; min-height: 50px; color: var(--encre); font-weight: 600; text-decoration: none; border-bottom: 1px solid var(--filet); }
 .menu nav a:last-child { border-bottom: 0; }
-.onglets-bas { display: none; position: fixed; z-index: 20; inset: auto 0 0; grid-template-columns: repeat(4, 1fr); padding-bottom: env(safe-area-inset-bottom, 0px); background: var(--blanc); border-top: 1px solid var(--filet); }
-.onglets-bas a { display: grid; justify-items: center; gap: .1rem; padding: .45rem .2rem .4rem; color: var(--gris); font-size: .78rem; font-weight: 600; text-decoration: none; }
-.onglets-bas a[aria-current] { color: var(--enset); }
-.onglets-bas span { position: relative; display: block; line-height: 0; }
-.onglets-bas b { position: absolute; right: -9px; top: -5px; min-width: 18px; padding: 0 .25rem; border-radius: 999px; background: var(--danger); color: #fff; font-size: .72rem; line-height: 18px; text-align: center; }
 
 /* Héros : l'arche du logo porte la photo du campus */
 .heros { position: relative; padding: clamp(1.8rem, 3.5vw, 3rem) 0 0; overflow: clip; }
@@ -409,9 +401,6 @@ dd { margin: 0; font-weight: 600; overflow-wrap: anywhere; }
 	.bandeau { position: sticky; }
 	.menu { display: block; }
 	.bandeau__reprendre { display: none; }
-	.onglets-bas { display: grid; }
-	.page-dossier .pied { padding-bottom: 66px; }
-	.page-dossier .bandeau__actions { display: none; }
 	.bandeau__actions { margin-left: auto; }
 	.heros__grille, .ecole, .dossier-section__grille, .questions__grille, .espace__grille { grid-template-columns: minmax(0, 1fr); }
 	.heros__texte { padding-bottom: 1rem; }
@@ -441,7 +430,7 @@ dd { margin: 0; font-weight: 600; overflow-wrap: anywhere; }
 @media (max-width: 640px) {
 	.rangee, .rangee--trois, .parcours-choix__liste, .filieres { grid-template-columns: minmax(0, 1fr); }
 	.bandeau__reprendre { display: none; }
-	.marque__nom small { display: none; }
+	.marque__nom small, .bandeau--connecte .marque__nom { display: none; }
 	.pieces { columns: 1; }
 	.heros__actions .btn { width: 100%; }
 	.ecole__photos img:first-child { width: 100%; }

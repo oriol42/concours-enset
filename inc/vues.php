@@ -93,48 +93,26 @@ function ceb_fin( array $o = array() ) {
 	echo "</body>\n</html>\n";
 }
 
-/** En-tête : public sur les pages du concours, espace candidat dans son dossier. */
+/** Un seul en-tête sur tout le site : connecté, le candidat y retrouve son dossier. */
 function ceb_entete() {
-	$dossier = ceb_dossier_courant();
-	$page    = get_query_var( 'ceb_page' );
-	$logo    = '<img src="' . esc_url( CEB_URI . '/assets/images/enset-marque.webp' ) . '" alt="" width="50" height="50">';
-	if ( $dossier && in_array( $page, array( 'mon-dossier', 'notifications' ), true ) ) {
-		$non_lues = ceb_non_lues_candidat( $dossier->id );
-		?>
-		<header class="bandeau">
-			<div class="conteneur bandeau__ligne">
-				<a class="marque" href="<?php echo esc_url( ceb_url() ); ?>"><?php echo $logo; // Déjà échappé. ?><span class="marque__nom">ENSET Ebolowa<small>Mon espace candidat</small></span></a>
-				<nav class="bandeau__liens bandeau__liens--espace" aria-label="Mon espace" data-cloche="<?php echo esc_url( ceb_url( 'mon-dossier/notifications' ) . '?json=1' ); ?>">
-					<a href="<?php echo esc_url( ceb_url( 'mon-dossier' ) ); ?>"<?php echo 'mon-dossier' === $page ? ' aria-current="page"' : ''; ?>>Mon dossier</a>
-					<a href="<?php echo esc_url( ceb_url( 'mon-dossier/notifications' ) ); ?>"<?php echo 'notifications' === $page ? ' aria-current="page"' : ''; ?>>Notifications<b data-cloche-nombre<?php echo $non_lues ? '' : ' hidden'; ?>><?php echo (int) $non_lues; ?></b></a>
-				</nav>
-				<div class="bandeau__actions">
-					<a class="btn btn--contour" href="<?php echo esc_url( ceb_url( 'quitter' ) ); ?>"><?php echo ceb_icone( 'sortie', 16 ); ?>Quitter</a>
-				</div>
-			</div>
-		</header>
-		<nav class="onglets-bas" aria-label="Mon espace, sur téléphone">
-			<a href="<?php echo esc_url( ceb_url( 'mon-dossier' ) ); ?>"<?php echo 'mon-dossier' === $page ? ' aria-current="page"' : ''; ?>><?php echo ceb_icone( 'dossier', 22 ); ?>Dossier</a>
-			<a href="<?php echo esc_url( ceb_url( 'mon-dossier/notifications' ) ); ?>"<?php echo 'notifications' === $page ? ' aria-current="page"' : ''; ?>><span><?php echo ceb_icone( 'cloche', 22 ); ?><b data-cloche-nombre<?php echo $non_lues ? '' : ' hidden'; ?>><?php echo (int) $non_lues; ?></b></span>Notifications</a>
-			<a href="<?php echo esc_url( ceb_url() ); ?>"><?php echo ceb_icone( 'tableau', 22 ); ?>Accueil</a>
-			<a href="<?php echo esc_url( ceb_url( 'quitter' ) ); ?>"><?php echo ceb_icone( 'sortie', 22 ); ?>Quitter</a>
-		</nav>
-		<?php
-		return;
-	}
+	$dossier  = ceb_dossier_courant();
+	$non_lues = $dossier ? ceb_non_lues_candidat( $dossier->id ) : 0;
+	$pastille = static fn() => '<b data-cloche-nombre' . ( $non_lues ? '' : ' hidden' ) . '>' . (int) $non_lues . '</b>';
+	$liens    = array( '#filieres' => 'Filières', '#dossier' => 'Pièces et frais', '#procedure' => 'Procédure', '#questions' => 'Questions' );
 	?>
-	<header class="bandeau">
+	<header class="bandeau<?php echo $dossier ? ' bandeau--connecte' : ''; ?>">
 		<div class="conteneur bandeau__ligne">
-			<a class="marque" href="<?php echo esc_url( ceb_url() ); ?>"><?php echo $logo; // Déjà échappé. ?><span class="marque__nom">ENSET Ebolowa<small>Concours d'entrée</small></span></a>
+			<a class="marque" href="<?php echo esc_url( ceb_url() ); ?>"><img src="<?php echo esc_url( CEB_URI . '/assets/images/enset-marque.webp' ); ?>" alt="" width="50" height="50"><span class="marque__nom">ENSET Ebolowa<small>Concours d'entrée</small></span></a>
 			<nav class="bandeau__liens" aria-label="Navigation principale">
-				<a href="<?php echo esc_url( ceb_url( '#filieres' ) ); ?>">Filières</a>
-				<a href="<?php echo esc_url( ceb_url( '#dossier' ) ); ?>">Pièces et frais</a>
-				<a href="<?php echo esc_url( ceb_url( '#procedure' ) ); ?>">Procédure</a>
-				<a href="<?php echo esc_url( ceb_url( '#questions' ) ); ?>">Questions</a>
+				<?php foreach ( $liens as $ancre => $nom ) : ?>
+					<a href="<?php echo esc_url( ceb_url( $ancre ) ); ?>"><?php echo esc_html( $nom ); ?></a>
+				<?php endforeach; ?>
 			</nav>
 			<div class="bandeau__actions">
 				<?php if ( $dossier ) : ?>
+					<a class="cloche" href="<?php echo esc_url( ceb_url( 'mon-dossier/notifications' ) ); ?>" aria-label="Notifications" data-cloche="<?php echo esc_url( ceb_url( 'mon-dossier/notifications' ) . '?json=1' ); ?>"><?php echo ceb_icone( 'cloche', 22 ); ?><?php echo $pastille(); // Déjà échappé. ?></a>
 					<a class="btn btn--primaire" href="<?php echo esc_url( ceb_url( 'mon-dossier' ) ); ?>">Mon dossier</a>
+					<a class="btn btn--contour bandeau__reprendre" href="<?php echo esc_url( ceb_url( 'quitter' ) ); ?>">Quitter</a>
 				<?php else : ?>
 					<a class="btn btn--contour bandeau__reprendre" href="<?php echo esc_url( ceb_url( 'reprendre' ) ); ?>">Reprendre</a>
 					<?php if ( 'ouvert' === ceb_etat_session() ) : ?>
@@ -144,11 +122,16 @@ function ceb_entete() {
 				<details class="menu" data-menu>
 					<summary aria-label="Menu"><?php echo ceb_icone( 'menu', 24 ); ?></summary>
 					<nav aria-label="Menu principal">
-						<a href="<?php echo esc_url( ceb_url( '#filieres' ) ); ?>">Filières</a>
-						<a href="<?php echo esc_url( ceb_url( '#dossier' ) ); ?>">Pièces et frais</a>
-						<a href="<?php echo esc_url( ceb_url( '#procedure' ) ); ?>">Procédure</a>
-						<a href="<?php echo esc_url( ceb_url( '#questions' ) ); ?>">Questions</a>
-						<?php if ( ! $dossier ) : ?>
+						<?php if ( $dossier ) : ?>
+							<a href="<?php echo esc_url( ceb_url( 'mon-dossier' ) ); ?>">Mon dossier</a>
+							<a href="<?php echo esc_url( ceb_url( 'mon-dossier/notifications' ) ); ?>">Notifications</a>
+						<?php endif; ?>
+						<?php foreach ( $liens as $ancre => $nom ) : ?>
+							<a href="<?php echo esc_url( ceb_url( $ancre ) ); ?>"><?php echo esc_html( $nom ); ?></a>
+						<?php endforeach; ?>
+						<?php if ( $dossier ) : ?>
+							<a href="<?php echo esc_url( ceb_url( 'quitter' ) ); ?>">Quitter</a>
+						<?php else : ?>
 							<a href="<?php echo esc_url( ceb_url( 'reprendre' ) ); ?>">Reprendre mon dossier</a>
 						<?php endif; ?>
 					</nav>
