@@ -248,7 +248,7 @@ function ceb_action_decision() {
 			ceb_notifier_candidat( $dossier, 'Dossier à corriger', 'Motif : ' . $motif . '. Corrige ton dossier et renvoie-le.' );
 			break;
 		case 'rouvrir':
-			ceb_maj_dossier( $dossier->id, array( 'statut' => 'soumis' ) );
+			ceb_maj_dossier( $dossier->id, array( 'statut' => 'soumis', 'motif' => '', 'paiement' => 'rejete' === $dossier->paiement ? 'attente' : $dossier->paiement ) );
 			ceb_journaliser( $dossier->id, $auteur, 'Dossier rouvert' );
 			ceb_notifier_candidat( $dossier, 'Dossier rouvert', 'La scolarité a rouvert ton dossier pour le réexaminer.' );
 			break;

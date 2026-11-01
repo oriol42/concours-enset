@@ -19,12 +19,12 @@ foreach ( array( 'paiements', 'pieces', 'valider', 'corriger', 'valides', 'saisi
 	$onglets[ $cle ] = array( CEB_FILES[ $cle ]['nom'], (int) $c->$cle );
 }
 $select = static function ( $nom, $vide, $options, $valeur ) {
-	echo '<label><span class="evitement">' . esc_html( $vide ) . '</span><select name="' . esc_attr( $nom ) . '" data-auto><option value="">' . esc_html( $vide ) . '</option>';
+	echo '<label class="filtres__choix' . ( $valeur ? ' est-actif' : '' ) . '"><span class="evitement">' . esc_html( $vide ) . '</span><select name="' . esc_attr( $nom ) . '" data-auto><option value="">' . esc_html( $vide ) . '</option>';
 	foreach ( $options as $k => $l ) {
 		$l = is_array( $l ) ? $l['court'] : $l;
 		echo '<option value="' . esc_attr( $k ) . '"' . selected( $valeur, $k, false ) . '>' . esc_html( $l ) . '</option>';
 	}
-	echo '</select></label>';
+	echo '</select>' . ceb_icone( 'chevron', 15 ) . '</label>';
 };
 $actions = '';
 if ( ceb_peut( 'ceb_exporter' ) ) {
@@ -47,7 +47,9 @@ $tete( 'Dossiers', $total . ' dossier' . ( $total > 1 ? 's' : '' ) . ' avec ces 
 	$select( 'filiere', 'Toutes les filières', CEB_FILIERES, $f['filiere'] );
 	$select( 'centre', 'Tous les centres', CEB_CENTRES, $f['centre'] );
 	?>
-	<button class="btn btn--primaire" type="submit">Filtrer</button>
+	<?php if ( array_filter( array( $f['q'], $f['cycle'], $f['filiere'], $f['centre'] ) ) ) : ?>
+		<a class="filtres__effacer" href="<?php echo esc_url( add_query_arg( array_filter( array( 'vue' => 'dossiers', 'file' => $f['file'] ) ), $base ) ); ?>"><?php echo ceb_icone( 'croix', 14 ); ?>Effacer</a>
+	<?php endif; ?>
 </form>
 <?php if ( ! $rangs ) : ?>
 	<div class="panneau vide-grand"><?php echo ceb_icone( 'loupe', 26 ); ?><p>Aucun dossier avec ces filtres.</p><a href="<?php echo esc_url( add_query_arg( 'vue', 'dossiers', $base ) ); ?>">Tout afficher</a></div>

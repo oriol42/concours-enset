@@ -166,7 +166,7 @@ function ceb_afficher_flash() {
  * @param array $c nom, libelle, valeur, erreurs, type, aide, options (select), attrs, facultatif, classe.
  */
 function ceb_champ( array $c ) {
-	$c += array( 'type' => 'text', 'valeur' => '', 'erreurs' => array(), 'aide' => '', 'options' => null, 'attrs' => array(), 'facultatif' => false, 'classe' => '', 'vide' => 'Choisir' );
+	$c += array( 'type' => 'text', 'valeur' => '', 'erreurs' => array(), 'aide' => '', 'options' => null, 'attrs' => array(), 'facultatif' => false, 'classe' => '', 'vide' => 'Choisir', 'mention' => true );
 	$id     = 'c-' . $c['nom'];
 	$erreur = $c['erreurs'][ $c['nom'] ] ?? '';
 	$decrit = array_filter( array( $c['aide'] ? $id . '-aide' : '', $erreur ? $id . '-err' : '' ) );
@@ -185,7 +185,7 @@ function ceb_champ( array $c ) {
 	}
 	?>
 	<div class="champ <?php echo esc_attr( $c['classe'] . ( $erreur ? ' champ--invalide' : '' ) ); ?>" data-champ="<?php echo esc_attr( $c['nom'] ); ?>">
-		<label for="<?php echo esc_attr( $id ); ?>"><?php echo esc_html( $c['libelle'] ); ?><?php if ( $c['facultatif'] ) : ?> <small>facultatif</small><?php endif; ?></label>
+		<label for="<?php echo esc_attr( $id ); ?>"><?php echo esc_html( $c['libelle'] ); ?><?php if ( $c['facultatif'] && $c['mention'] ) : ?> <small>facultatif</small><?php endif; ?></label>
 		<?php if ( is_array( $c['options'] ) ) : ?>
 			<div class="champ__select">
 				<select id="<?php echo esc_attr( $id ); ?>" name="<?php echo esc_attr( $c['nom'] ); ?>"<?php echo $attrs; // Déjà échappé. ?>>

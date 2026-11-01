@@ -161,7 +161,7 @@ await photo(g, "gestion-dossier");
 const decider = async (d, motif) => {
 	const f = await g.$(`form.decision:has(input[value=${d}])`);
 	if (motif) {
-		await f.evaluate((x) => { x.closest("details").open = true; });
+		await f.evaluate((x) => { x.closest("details").open = true; x.closest("[role=tabpanel]").hidden = false; });
 		await (await f.$("input[name=motif]")).type(motif);
 	}
 	await Promise.all([g.waitForNavigation(), f.$eval("button", (b) => b.click())]);
@@ -206,7 +206,7 @@ await aller(ag, "/gestion/?vue=dossiers&file=paiements");
 await Promise.all([ag.waitForNavigation(), ag.click("td a")]);
 await ag.$eval("form.decision input[value=verifier_paiement]", (x) => x.form.querySelector("button").click());
 await ag.waitForNavigation();
-ok(/Paiement vérifié/.test(await texte(ag)), "un agent vérifie un paiement");
+ok(/Paiement vérifié/.test(await ag.$eval("#t-journal", (e) => e.textContent)), "un agent vérifie un paiement");
 await aller(g, "/gestion/?vue=equipe");
 await Promise.all([g.waitForNavigation(), g.$eval(".membres select", (s) => { s.value = "ceb_direction"; s.form.submit(); })]);
 ok((await ag.goto(URLB + "/gestion/?vue=export-csv")).status() === 403, "export refusé à la direction");

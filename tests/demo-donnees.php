@@ -22,6 +22,18 @@ foreach ( CEB_LIAISONS as $f => $options ) {
 	}
 }
 $n = (int) ( $argv[2] ?? 64 );
+/* Reçu fictif, pour voir l'écran de vérification. */
+function demo_recu( $transaction ) {
+	$nom = bin2hex( random_bytes( 16 ) ) . '.jpg';
+	$im  = imagecreatetruecolor( 1100, 720 );
+	imagefill( $im, 0, 0, imagecolorallocate( $im, 250, 250, 245 ) );
+	$noir = imagecolorallocate( $im, 40, 40, 40 );
+	foreach ( array( 'RECU FICTIF DE DEMONSTRATION', 'Banque : SCB Cameroun', 'Montant : 20 000 FCFA', 'Transaction : ' . $transaction ) as $i => $t ) {
+		imagestring( $im, 5, 70, 90 + $i * 60, $t, $noir );
+	}
+	imagejpeg( $im, ceb_dossier_fichiers() . '/' . $nom, 80 );
+	return $nom;
+}
 for ( $i = 0; $i < $n; $i++ ) {
 	list( $f, $o, $dip ) = $pick( $couples );
 	$age   = mt_rand( 17, 33 );
@@ -45,6 +57,7 @@ for ( $i = 0; $i < $n; $i++ ) {
 		'telephone' => '6' . mt_rand( 70000000, 99999999 ), 'email' => 'candidat' . $id . '@example.invalid', 'adresse' => 'Ebolowa, Nkoétyé', 'region' => $reg,
 		'departement' => $dep, 'arrondissement' => CEB_ARRONDISSEMENTS[ $dep ][0], 'cni' => 'DEMO' . str_pad( (string) $id, 6, '0', STR_PAD_LEFT ), 'cni_date' => '2024-03-12', 'cni_lieu' => 'EBOLOWA',
 		'etablissement' => 'LYCÉE TECHNIQUE D\'EBOLOWA', 'annee_diplome' => 2024, 'mention' => $pick( array( 'P', 'AB', 'B' ) ), 'transaction_num' => 'SCB' . ( 240000 + $id ),
+		'recu' => demo_recu( 'SCB' . ( 240000 + $id ) ), 'recu_type' => 'image/jpeg',
 		'statut' => $statut, 'paiement' => $paiement, 'motif' => 'rejete' === $statut ? 'Reçu illisible' : '', 'soumis_le' => $quand, 'etape' => 7,
 		'alerte_age' => ceb_depasse_age( $base['date_naissance'], $base['cycle'], 0 ) ? 1 : 0,
 		'depot_le' => 'valide' === $statut || ( 'verifie' === $paiement && $etat % 2 ) ? $quand : null,
