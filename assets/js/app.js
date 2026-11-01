@@ -46,6 +46,13 @@
 	/* Retour arrière du navigateur : le bouton doit redevenir actif. */
 	addEventListener("pageshow", () => $$("[data-envoi]").forEach((b) => { b.disabled = false; }));
 
+	/* Menu : se referme au choix d'un lien ou en touchant ailleurs. */
+	const menu = document.querySelector("[data-menu]");
+	if (menu) {
+		menu.addEventListener("click", (e) => { if (e.target.closest("a")) menu.open = false; });
+		document.addEventListener("click", (e) => { if (!menu.contains(e.target)) menu.open = false; });
+	}
+
 	/* Dates : les barres s'ajoutent seules, le clavier numérique suffit. */
 	$$("[data-date]").forEach((c) => c.addEventListener("input", (e) => {
 		if (e.inputType === "deleteContentBackward") return;

@@ -54,7 +54,7 @@ Le candidat est prévenu de chaque décision, dans `/mon-dossier/notifications` 
 
 ## Tests
 
-`tests/parcours.mjs` : parcours complet dans Chrome avec des candidats fictifs (43 vérifications, voir l'en-tête du fichier). Dernier passage le 2026-11-01 : tout est passé.
+`tests/parcours.mjs` : parcours complet dans Chrome avec des candidats fictifs (46 vérifications, voir l'en-tête du fichier). Dernier passage le 2026-11-01 : tout est passé.
 
 `tests/demo-donnees.php` : remplit une base de test avec des candidats fictifs (jamais en production).
 

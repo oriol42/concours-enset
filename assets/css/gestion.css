@@ -343,3 +343,6 @@ td small.age { color: #7a4f00; font-weight: 600; margin-top: .15rem; }
 
 .gestion__corps .credit { margin-top: 2rem; padding: 0; }
 
+
+.barre__sortie { display: none; }
+@media (max-width: 860px) { .barre__sortie { display: grid; place-items: center; width: 42px; height: 42px; flex: none; margin-left: auto; color: #fff; } }

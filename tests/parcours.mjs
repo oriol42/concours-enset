@@ -89,6 +89,15 @@ for (const [mobile, nom] of [[false, "accueil-pc"], [true, "accueil-mobile"]]) {
 	await p.close();
 }
 
+/* Navigation sur téléphone */
+const mob = await ouvrir(true);
+await aller(mob, "/");
+await mob.click(".menu summary");
+await mob.waitForSelector(".menu nav a", { visible: true });
+ok((await mob.$$(".menu nav a")).length === 5, "menu public sur téléphone");
+await photo(mob, "menu-mobile");
+await mob.close();
+
 /* Candidat A, sur téléphone */
 const A = { cycle: "CYC2", diplome: "LIC_TECH", parcours: "BIOMED|MHB", centre: "EBOL", noms: "Ngono Élodie", prenoms: "Marie-Thérèse", naissance: "2000-03-14", tel: "+237 677 12 34 56", mail: "elodie.test@example.invalid", cni: "1234 56789", tx: "SCB20270001" };
 const p = await ouvrir(true);
@@ -115,6 +124,10 @@ await p.$eval("#c-engagement", (e) => e.click());
 await envoyer(p);
 ok(/mon-dossier/.test(p.url()), "dossier envoyé");
 await photo(p, "dossier-mobile");
+ok(await p.$eval(".onglets-bas", (e) => getComputedStyle(e).display === "grid"), "onglets du bas pour le candidat");
+await Promise.all([p.waitForNavigation({ timeout: 8000 }), p.$eval(".onglets-bas a:nth-child(2)", (a) => a.click())]);
+ok(/notifications/.test(p.url()), "navigation par les onglets");
+await aller(p, "/mon-dossier");
 const numero = (await texte(p)).match(/UEB-\d{4}-\d{6}/)[0];
 const pdf = await p.evaluate(async (u) => { const r = await fetch(u); const a = new Uint8Array(await r.arrayBuffer()); return [r.status, r.headers.get("content-type"), [...a].map((b) => String.fromCharCode(b)).join("")]; }, URLB + "/mon-dossier/fiche/");
 ok(pdf[0] === 200 && /pdf/.test(pdf[1]), "fiche PDF servie");

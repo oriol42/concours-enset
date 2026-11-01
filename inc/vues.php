@@ -105,6 +105,12 @@ function ceb_entete() {
 				</div>
 			</div>
 		</header>
+		<nav class="onglets-bas" aria-label="Mon espace, sur téléphone">
+			<a href="<?php echo esc_url( ceb_url( 'mon-dossier' ) ); ?>"<?php echo 'mon-dossier' === $page ? ' aria-current="page"' : ''; ?>><?php echo ceb_icone( 'dossier', 22 ); ?>Dossier</a>
+			<a href="<?php echo esc_url( ceb_url( 'mon-dossier/notifications' ) ); ?>"<?php echo 'notifications' === $page ? ' aria-current="page"' : ''; ?>><span><?php echo ceb_icone( 'cloche', 22 ); ?><b data-cloche-nombre<?php echo $non_lues ? '' : ' hidden'; ?>><?php echo (int) $non_lues; ?></b></span>Notifications</a>
+			<a href="<?php echo esc_url( ceb_url() ); ?>"><?php echo ceb_icone( 'tableau', 22 ); ?>Accueil</a>
+			<a href="<?php echo esc_url( ceb_url( 'quitter' ) ); ?>"><?php echo ceb_icone( 'sortie', 22 ); ?>Quitter</a>
+		</nav>
 		<?php
 		return;
 	}
@@ -127,6 +133,18 @@ function ceb_entete() {
 						<a class="btn btn--primaire" href="<?php echo esc_url( ceb_url( 'candidature/1' ) ); ?>">M'inscrire</a>
 					<?php endif; ?>
 				<?php endif; ?>
+				<details class="menu" data-menu>
+					<summary aria-label="Menu"><?php echo ceb_icone( 'menu', 24 ); ?></summary>
+					<nav aria-label="Menu principal">
+						<a href="<?php echo esc_url( ceb_url( '#filieres' ) ); ?>">Filières</a>
+						<a href="<?php echo esc_url( ceb_url( '#dossier' ) ); ?>">Pièces et frais</a>
+						<a href="<?php echo esc_url( ceb_url( '#procedure' ) ); ?>">Procédure</a>
+						<a href="<?php echo esc_url( ceb_url( '#questions' ) ); ?>">Questions</a>
+						<?php if ( ! $dossier ) : ?>
+							<a href="<?php echo esc_url( ceb_url( 'reprendre' ) ); ?>">Reprendre mon dossier</a>
+						<?php endif; ?>
+					</nav>
+				</details>
 			</div>
 		</div>
 	</header>

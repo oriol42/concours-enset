@@ -60,6 +60,7 @@ ceb_debut( array( 'titre' => 'Scolarité', 'corps' => 'page-gestion', 'nu' => tr
 				</a>
 			<?php endforeach; ?>
 		</nav>
+		<a class="barre__sortie" href="<?php echo esc_url( wp_logout_url( ceb_url() ) ); ?>" aria-label="Déconnexion"><?php echo ceb_icone( 'sortie', 20 ); ?></a>
 		<div class="barre__pied">
 			<p class="barre__session"><b>Session <?php echo esc_html( $r['annee'] ); ?></b><?php echo esc_html( $etat ); ?></p>
 			<p class="barre__moi"><b><?php echo esc_html( wp_get_current_user()->display_name ); ?></b><?php
